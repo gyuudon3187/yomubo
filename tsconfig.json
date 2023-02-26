@@ -10,5 +10,15 @@
     {
       "path": "./tsconfig.vitest.json"
     }
+  ],
+  "compilerOptions": {
+    "target": "es6",
+    "module": "ES2015",
+    "outDir": "./public",
+    "rootDir": "./src",
+    "types": ["vite/client"]
+  },
+  "include": [
+    "src/**/*.json"
   ]
 }

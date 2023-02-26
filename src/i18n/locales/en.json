@@ -1,0 +1,38 @@
+{
+    "landingPage": {
+        "nav": {
+            "home": "Home",
+            "about": "About Us"
+        },
+        "home": {
+            "welcomeMsg": "<h1>Organizing <span style=\"font-weight:bold\">book clubs</span><br><span style=\"margin-left: 50px\"></span>has never been this easy</h1>",
+            "username": "Username",
+            "password": "Password",
+            "signup": "Sign up",
+            "login": "Log in"
+        },
+        "about": {
+            "header": "Who are we?",
+            "introduction": "Hi, my name is Daniel. <br><br>This website started out as a hobby to organize a book club I used to host. Eventually it turned into a school project that I did together with three other <a style=\"font-weight:700\" href=\"https://www.kth.se/en\" target=\"_blank\" rel=\"noopener noreferrer\">KTH</a> students. Now we are only two left working on it. <br><br>If you want to contribute to the website or have any questions, feel free to reach out to us at {account}{'@'}{domain}"
+        },
+        "explanation": {
+            "header": "How does it work?",
+            "findClub": {
+                "header": "Find the club just for you",
+                "description": "Want to read a specific genre in a specific language? <br>Want to discuss books with your club online or offline? <br>Search for clubs according to your preferences."
+            },
+            "readingList": {
+                "header": "Manage book proposals",
+                "description": "Add the next-to-read book proposals to the Reading List. <br>The Reading List is managed by all club members. <br>Book search is powered by Google Books."
+            },
+            "synopsisAndProgress": {
+                "header": "Synopsis and progress tracking",
+                "description": "Select a book from the Reading List to view its synopsis. <br>Found something interesting? Vote for it! <br>Track your reading progress of the book that wins."
+            },
+            "voteResults": {
+                "header": "Calculate votes",
+                "description": "The club owner sets a voting deadline. <br>When the deadline is due, the votes are calculated. <br>The book with most votes will be read by the club."
+            }
+        }
+    }
+}
