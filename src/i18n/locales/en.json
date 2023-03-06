@@ -15,6 +15,40 @@
             "header": "Who are we?",
             "introduction": "Hi, my name is Daniel. <br><br>This website started out as a hobby to organize a book club I used to host. Eventually it turned into a school project that I did together with three other <a style=\"font-weight:700\" href=\"https://www.kth.se/en\" target=\"_blank\" rel=\"noopener noreferrer\">KTH</a> students. Now we are only two left working on it. <br><br>If you want to contribute to the website or have any questions, feel free to reach out to us at {account}{'@'}{domain}"
         },
+        "registration": {
+            "header": "Registration",
+            "input": {
+                "name": {
+                    "label": "Your Name",
+                    "firstName": "First name",
+                    "lastName": "Last name"
+                },
+                "gender": {
+                    "label": "Gender",
+                    "male": "Male",
+                    "female": "Female",
+                    "other": "Other"
+                },
+                "languages": {
+                    "label": "Languages",
+                    "english": "English",
+                    "swedish": "Swedish"
+                },
+                "email": {
+                    "label": "E-mail Address",
+                    "email": "E-mail"
+                },
+                "password": {
+                    "label": "Password",
+                    "password": "Password",
+                    "confirmPassword": "Confirm password"
+                }
+            },
+            "buttons": {
+                "return": "Go back",
+                "submit": "Submit"
+            }
+        },
         "explanation": {
             "header": "How does it work?",
             "findClub": {

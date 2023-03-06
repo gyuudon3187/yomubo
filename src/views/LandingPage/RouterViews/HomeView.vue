@@ -1,14 +1,31 @@
 <script setup lang="ts">
-import Input from '../../../components/Misc/Input.vue';
+import InputField from '../../../components/Misc/InputField.vue';
 import Button from '../../../components/Misc/Button.vue';
+import { initializeButton, initializeInputField } from "@/components/util";
 import { useI18n } from 'vue-i18n';
+import { useModalStore } from '@/stores/modal';
 const { t } = useI18n();
+const modal = useModalStore();
 
-const welcomeMsg = t("landingPage.home.welcomeMsg");
-const username = t("landingPage.home.username");
-const password = t("landingPage.home.password");
-const signup = t("landingPage.home.signup");
-const login = t("landingPage.home.login");
+const {
+    welcomeMsg,
+    username,
+    password,
+    signup,
+    login
+} = initializeVariables()
+
+function initializeVariables() {
+    const basePath = "landingPage.home.";
+
+    return {
+        welcomeMsg: t(basePath + "welcomeMsg"),
+        username: initializeInputField(basePath + "username"),
+        password: initializeInputField(basePath + "password"),
+        signup: initializeButton(basePath + "signup", "primary", modal.open),
+        login: initializeButton(basePath + "login", "secondary", () => {}),
+    }
+}
 </script>
 
 <template>
@@ -16,12 +33,12 @@ const login = t("landingPage.home.login");
     <div class="welcomeMsg" v-html="welcomeMsg">
     </div>
     <div class="input">
-        <Input :slideUpText="username" />
-        <Input :slideUpText="password" />
+        <InputField :inputProps="username" />
+        <InputField :inputProps="password" />
     </div>
     <div class="btn">
-        <Button :text="signup" type="primary" />
-        <Button :text="login" type="secondary" />
+        <Button :buttonProps="signup" />
+        <Button :buttonProps="login" />
     </div>
   </div>
     

@@ -1,8 +1,23 @@
 <script setup lang="ts">
 import type { Ref } from 'vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
+
+onMounted(() => {
+  window.addEventListener("scroll", showExplanationOnScroll);
+})
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", showExplanationOnScroll);
+})
+
+const { 
+  mainHeader,
+  explanations,
+  offset,
+  observedPositions,
+  explanationColumns } = initializeVariables();
 
 interface MainHeader {
   text: string,
@@ -18,88 +33,92 @@ interface Explanation {
 
 interface Offset {
   viewport: number,
-  mainHeader: number
+  mainHeader: number,
+  explanation: number,
+  spaceBetweenExplanationRows: number
 };
 
 function initializeVariables() {
   const basePath = "landingPage.explanation.";
+  const explanationNames = ["findClub", "readingList", "synopsisAndProgress", "voteResults"];
+  const explanationColumns = 2;
+  const offset = initializeOffset();
 
   function initializeMainHeader(): MainHeader {
     return {
-      text: basePath + "header",
+      text: t(basePath + "header"),
       isVisible: ref(false)
     }
   }
 
   function initializeExplanations(explanationNames: string[]): Explanation[] {
     const assetsPath = "src/assets/";
-    const initializedExplanations: Explanation[] = [];
-
-    explanationNames.forEach(name => {
-      initializedExplanations.push({
-        header: basePath + name + ".header",
-        description: t(basePath + name + ".description"),
-        imgSrc: assetsPath + name + ".png",
-        isVisible: ref(false)
-      })
-    })
-
-    return initializedExplanations;
+    return explanationNames.map(name => ({
+      header: t(basePath + name + ".header"),
+      description: t(basePath + name + ".description"),
+      imgSrc: assetsPath + name + ".png",
+      isVisible: ref(false)
+    }))
   }
 
   function initializeOffset(): Offset {
     return {
       viewport: 600,
-      mainHeader: 120
+      mainHeader: 120,
+      explanation: 350,
+      spaceBetweenExplanationRows: 380
     }
+  }
+
+  function initializeObservedPositions(): number[] {
+    const observedPositions: number[] = [];
+    const explanationRows = Math.ceil(explanationNames.length / explanationColumns);
+
+    for(let i = 0; i < explanationRows; i++) {
+      for(let j = 0; j < explanationColumns; j++) {
+        observedPositions.push((i * offset.spaceBetweenExplanationRows) + offset.explanation)
+      }
+    }
+
+    return observedPositions;
   }
 
   return {
     mainHeader: initializeMainHeader(),
-    explanations: initializeExplanations(["findClub", "readingList", "synopsisAndProgress", "voteResults"]),
-    offset: initializeOffset()
+    explanations: initializeExplanations(explanationNames),
+    observedPositions: initializeObservedPositions(),
+    offset,
+    explanationColumns
   }
 }
 
-function leftOrRight(name: string, index: number): string {
-  return name + (index % 2 === 0 ? '-left' : '-right');
-}
+function showExplanationOnScroll(): void {
+  let ticking = false;
+  let i = 0;
 
-const {mainHeader, explanations, offset} = initializeVariables();
-let observedPositions: number[] = [];
-
-onMounted(() => {
-  function eventListener(): void {
-    let ticking = false;
-    let i = 0;
-
-    if(!ticking) {
-      window.requestAnimationFrame(() => {
-        const observedViewport = window.scrollY + window.innerHeight - offset.viewport;
-        mainHeader.isVisible.value = observedViewport > offset.mainHeader;
-        observedPositions.forEach(observedPos => {
-          explanations[i++].isVisible.value = observedViewport > observedPos;
-        })
+  if(!ticking) {
+    window.requestAnimationFrame(() => {
+      const observedViewport = window.scrollY + window.innerHeight - offset.viewport;
+      mainHeader.isVisible.value = observedViewport > offset.mainHeader;
+      observedPositions.forEach(observedPos => {
+        explanations[i++].isVisible.value = observedViewport > observedPos;
       })
-    }
-
-    ticking = true;
+    })
   }
 
-  const explanationLevelCount = Math.ceil(document.querySelector("#explanation-items")!.children.length) / 2;
-  for(let i = 0; i < explanationLevelCount; i++) {
-    observedPositions.push((i * 400) + 350)
-    observedPositions.push((i * 400) + 350)
-  }
-  window.addEventListener("scroll", eventListener)
-})
+  ticking = true;
+}
+
+function leftOrRight(name: string, columnIndex: number): string {
+  return name + (columnIndex % explanationColumns === 0 ? '-left' : '-right');
+}
 </script>
 
 <template>
   <div class="explanation">
 
     <Transition name="slide-left" mode="out-in">
-      <h1 id="how-it-works" class="explanation-header-right" v-show="mainHeader.isVisible.value">{{ t(mainHeader.text) }}</h1>
+      <h1 id="how-it-works" class="explanation-header-right" v-show="mainHeader.isVisible.value">{{ mainHeader.text }}</h1>
     </Transition>
   
     <div id="explanation-items">
@@ -110,7 +129,7 @@ onMounted(() => {
         :name="leftOrRight('slide', index)">
 
         <div class="explanation-item" v-show="explanation.isVisible.value">
-          <h1 :class="leftOrRight('explanation-header', index)">{{ t(explanation.header) }}</h1>
+          <h1 :class="leftOrRight('explanation-header', index)">{{ explanation.header }}</h1>
 
           <p v-html="explanation.description" />
 

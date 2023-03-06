@@ -7,6 +7,7 @@
   --vt-c-beige: #FDEACD;
   --vt-c-light-orange: #EDA14A;
   --vt-c-dark-orange: #EE864B;
+  --vt-c-gray-black: #313131;
 
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -37,10 +38,14 @@
   
   --color-input: var(--vt-c-light-gray);
 
+  /* btns */
   --color-primary: var(--vt-c-dark-orange);
   --color-scnd-primary: var(--vt-c-light-orange);
+  --color-tertiary: var(--vt-c-light-gray);
+  --color-tertiary-border: var(--vt-c-dark-gray);
 
   --color-on-primary: var(--vt-c-beige);
+  --color-on-background: var(--vt-c-gray-black);
 
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);

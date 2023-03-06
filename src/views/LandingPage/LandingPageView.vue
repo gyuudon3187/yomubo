@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import type { ButtonInterface } from "@/types/misc";
 import { RouterView } from "vue-router";
-import Background from "../../components/LandingPage/Background/Background.vue"
-import Header from "../../components/LandingPage/Header.vue"
+import RegistrationModal from "@/components/LandingPage/RegistrationModal.vue";
+import Modal from "../../components/Misc/Modal.vue";
+import Background from "../../components/LandingPage/Background/Background.vue";
+import Header from "../../components/LandingPage/Header.vue";
+import { useModalStore } from "@/stores/modal";
+import { useI18n } from "vue-i18n";
+const modal = useModalStore();
+const { t } = useI18n();
+
 </script>
 
 <template>
-  <div class="landingPage">
+  <RegistrationModal v-show="modal.isVisible"/>
+  <div id="landingPage">
     <Background />
 
     <div class="main">
@@ -20,14 +29,9 @@ import Header from "../../components/LandingPage/Header.vue"
 </template>
 
 <style scoped>
-.landingPage {
+#landingPage {
   padding: 2rem 3rem;
   width: 1263px;
-}
-
-.background-images {
-  position: relative;
-  z-index: 0;
 }
 
 .main {

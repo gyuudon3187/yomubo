@@ -1,18 +1,21 @@
 <script setup lang="ts">
+import type { ButtonInterface } from "@/types/misc";
+
 defineProps<{
-    text: string,
-    type: string
+    buttonProps: ButtonInterface
 }>();
 </script>
 
 <template>
-    <button :class="type">{{ text }}</button>
+    <button :class="buttonProps.type" @click="buttonProps.callback">
+        {{ buttonProps.text }}
+    </button>
 </template>
 
 <style scoped>
 button {
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 1rem;
     color: var(--color-on-primary);
     text-align: center;
     display: inline-block;
@@ -23,11 +26,6 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    transition: 120ms;
-    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.08);
-}
-
 .primary {
     background-color: var(--color-primary);
 }
@@ -35,4 +33,22 @@ button:hover {
 .secondary {
     background-color: var(--color-scnd-primary);
 }
+
+.tertiary {
+    background-color: var(--color-tertiary);
+    border: 2px solid var(--color-tertiary-border);
+    color: var(--color-on-background)
+}
+
+.primary:hover, .secondary:hover {
+    transition: 120ms;
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.08);
+}
+
+.tertiary:hover {
+    transition: 120ms;
+    box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.08);
+}
+
+
 </style>

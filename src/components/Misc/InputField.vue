@@ -1,16 +1,17 @@
 <script setup lang="ts">
+import type { InputFieldInterface } from '@/types/misc';
 import { ref } from 'vue';
-const props = defineProps<{
-    slideUpText: string
+defineProps<{
+    inputProps: InputFieldInterface
 }>();
 
-const input = ref("");
+const value = ref("");
 </script>
 
 <template>
     <div class="test">
-        <input class="input" v-model="input"/>
-        <label class="label">{{ props.slideUpText }}</label>
+        <input class="input" :class="{filled: value}" v-model="value"/>
+        <label class="label" :class="{filled: value}">{{ inputProps.label }}</label>
     </div>
 </template>
 
@@ -29,12 +30,12 @@ const input = ref("");
     transition: all .3s;
 }
 
-.input:focus  {
+.input:focus {
     border: 2px solid #7C4200;
 }
 
 .input:focus+.label,
-.filled {
+.filled+.label {
     top: -10px;
     color:#7C4200;
     font-size: 14px;

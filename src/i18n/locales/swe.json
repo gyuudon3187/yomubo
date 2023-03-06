@@ -1,3 +1,38 @@
 {
-    
+    "landingPage": {
+        "nav": {
+            "home": "Hem",
+            "about": "Om oss"
+        },
+        "home": {
+            "welcomeMsg": "<h1>Att organisera <span style=\"font-weight:bold\">bokklubbar</span><br><span style=\"margin-left: 50px\"></span>har aldrig varit så lätt</h1>",
+            "username": "Användarnamn",
+            "password": "Lösenord",
+            "signup": "Registrering",
+            "login": "Logga in"
+        },
+        "about": {
+            "header": "Vilka är vi?",
+            "introduction": "Hej, jag heter Daniel. <br><br>Jag startade den här hemsidan på min fritid för att organisera en bokklubb som höll i en gång i tiden. Så småningom övergick den till att vara ett skolprojekt som jag och tre andra <a style=\"font-weight:700\" href=\"https://www.kth.se/en\" target=\"_blank\" rel=\"noopener noreferrer\">KTH</a>-studenter jobbade på tillsammsn. Nu är vi endast två som arbetar på den. <br><br>Om du vill bidra till hemsidan eller ställa frågor, vänligen vänd dig till {account}{'@'}{domain}"
+        },
+        "explanation": {
+            "header": "Hur går det till?",
+            "findClub": {
+                "header": "Hitta en klubb som passar dig",
+                "description": "Vill du läsa en specifik genre på ett specifikt språk? <br>Vill du diskutera böcker med din klubb online eller offline? <br>Då kan du söka efter klubbar ....."
+            },
+            "readingList": {
+                "header": "Manage book proposals",
+                "description": "Add the next-to-read book proposals to the Reading List. <br>The Reading List is managed by all club members. <br>Book search is powered by Google Books."
+            },
+            "synopsisAndProgress": {
+                "header": "Synopsis and progress tracking",
+                "description": "Select a book from the Reading List to view its synopsis. <br>Found something interesting? Vote for it! <br>Track your reading progress of the book that wins."
+            },
+            "voteResults": {
+                "header": "Calculate votes",
+                "description": "The club owner sets a voting deadline. <br>When the deadline is due, the votes are calculated. <br>The book with most votes will be read by the club."
+            }
+        }
+    }
 }

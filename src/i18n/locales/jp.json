@@ -1,3 +1,38 @@
 {
-    
+    "landingPage": {
+        "nav": {
+            "home": "ホーム",
+            "about": "YomuBoとは"
+        },
+        "home": {
+            "welcomeMsg": "<h1><span style=\"font-weight:bold\">読書会</span>の運営を、より簡単に</h1>",
+            "username": "ユーザー名",
+            "password": "パスワード",
+            "signup": "登録",
+            "login": "ログイン"
+        },
+        "about": {
+            "header": "私たちについて",
+            "introduction": "初めまして、ダニエルと言います。<br><br>このサイトは、私が昔入っていた読書会を運営するために趣味で作ったものです。 いつしかそれが大学の課題に変わり、 <a style=\"font-weight:700\" href=\"https://www.kth.se/en\" target=\"_blank\" rel=\"noopener noreferrer\">KTH</a> の同期3人と協力して開発していましたが、 今では2人だけでやっています. <br><br>ご連絡は {account}{'@'}{domain}までお願いします。"
+        },
+        "explanation": {
+            "header": "どういう仕組み?",
+            "findClub": {
+                "header": "自分にぴったりの読書会を",
+                "description": "特定のジャンルを特定の言語で読む読書会、 <br>もしくはオンラインのみ、オフラインのみの読書会をお探しの方は、<br>自分の好みに合わせて検索できます。"
+            },
+            "readingList": {
+                "header": "課題本の候補を管理",
+                "description": "次に読む課題本の提案を候補リストに追加できます。 <br>候補リストは読書会の会員全員が管理します。 <br>検索はグーグルブックスのデータベースを利用しています。"
+            },
+            "synopsisAndProgress": {
+                "header": "本のあらすじや読み進み具合を確認",
+                "description": "候補リストに追加された本を選択すると、あらすじが読めます。 <br>面白そうな本が見つかったら、投票しましょう。<br>投票を勝ち抜いた本の読み進み具合を記録できます。"
+            },
+            "voteResults": {
+                "header": "投票数の計算",
+                "description": "まず、読書会の会長が投票の締め切りを設定します。 <br>締め切りが過ぎたら投票数が集計され、 <br>投票数の最も多い本が課題本として選ばれます。"
+            }
+        }
+    }
 }
