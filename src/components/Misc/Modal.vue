@@ -1,44 +1,35 @@
 <script setup lang="ts">
 import type {
-  InputComponent,
-  InputFieldInterface,
-  RadioButtonInterface,
-  MultiselectDropdownInterface,
   ButtonInterface, 
-InputComponentGroup} from '@/types/misc';
+  InputComponentGroup} from '@/types/misc';
+import { 
+  isInputField,
+  isRadioButton,
+  isMultiselectDropdown} from '@/components/util'
 import Button from '@/components/Misc/Button.vue';
 import Input from '@/components/Misc/InputField.vue';
+import RadioButton from '@/components/Misc/RadioButton.vue'
+import MultiselectDropdown from './MultiselectDropdown.vue';
 import { useModalStore } from '@/stores/modal';
 const modal = useModalStore();
 
-defineProps<{
+const props = defineProps<{
   header: string,
   componentGroups?: InputComponentGroup[]
   buttons: ButtonInterface[]
 }>();
 
-function closeModal(e: Event) {
-  if(e.target == document.getElementById('modal')) {
+function close({target}: MouseEvent) {
+  if(target == document.getElementById('modal')) {
     modal.close();
   }
 }
 
-function isInputField(component: InputComponent): component is InputFieldInterface {
-  return component.__typename === "InputFieldInterface";
-}
-
-function isRadioButton(component: InputComponent): component is RadioButtonInterface {
-  return component.__typename === "RadioButtonInterface";
-}
-
-function isMultiselectDropdown(component: InputComponent): component is MultiselectDropdownInterface {
-  return component.__typename === "MultiselectDropdownInterface";
-}
 </script>
 
 <template>
   <Transition name="fade" mode="out-in">
-    <div id="modal" @mousedown="closeModal($event)">
+    <div id="modal" @mousedown="close($event)">
       <Transition name="slide-down" mode="out-in">
         <div class="modal-content">
           
@@ -49,22 +40,13 @@ function isMultiselectDropdown(component: InputComponent): component is Multisel
 
           <div class="container">
             <div v-if="componentGroups">
-              <div v-for="componentGroup in componentGroups">
+              <div v-for="componentGroup in componentGroups" class="component-group">
                 <h3>{{ componentGroup.label }}</h3>
                 <div v-for="component in componentGroup.components" class="components">
 
-                  <div v-if="isInputField(component)">
-                    <Input :inputProps="component" />
-                  </div>
-
-                  <div v-else-if="isRadioButton(component)">
-                    <input type="radio" id="male" name="gender" :value="component.buttons[0]">
-                    <label for="gender">{{ component.buttons[0] }}</label>
-                  </div>
-
-                  <div v-else-if="isMultiselectDropdown(component)">
-                    multiselect
-                  </div>
+                  <Input v-if="isInputField(component)" :inputProps="component" />
+                  <RadioButton v-else-if="isRadioButton(component)" :radioButtonProps="component" />
+                  <MultiselectDropdown v-else-if="isMultiselectDropdown(component)" :multiselectProps="component" class="select"/>
 
                 </div>
               </div>
@@ -90,7 +72,7 @@ function isMultiselectDropdown(component: InputComponent): component is Multisel
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  /* overflow: auto; */
   background-color: rgb(0,0,0);
   background-color: rgba(0,0,0,0.4);
   vertical-align: middle;
@@ -100,13 +82,17 @@ function isMultiselectDropdown(component: InputComponent): component is Multisel
   background-color: #fefefe;
   border-radius: 20px;
   filter: drop-shadow(1.5px 3px 0.15em rgba(0, 0, 0, 0.5));
-  margin: 10% auto;
+  margin: 3% auto;
   border: 1px solid #888;
-  width: 50%;
+  width: 36%;
 }
 
-.components > input {
-  width: 100%;
+.component-group {
+  margin-bottom: 0.5rem;
+}
+
+.components {
+  display: inline-block;
 }
 
 .components > div {
@@ -138,6 +124,7 @@ footer {
 
 .close {
   color: #aaa;
+  cursor: pointer;
   font-size: 28px;
   font-weight: bold;
   float: right;

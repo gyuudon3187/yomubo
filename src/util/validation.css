@@ -1,0 +1,8 @@
+.invalid {
+  border: 2px solid var(--color-negative);
+}
+
+.invalidText {
+  color: var(--color-negative);
+  position: absolute;
+}

@@ -5,8 +5,8 @@
             "about": "About Us"
         },
         "home": {
-            "welcomeMsg": "<h1>Organizing <span style=\"font-weight:bold\">book clubs</span><br><span style=\"margin-left: 50px\"></span>has never been this easy</h1>",
-            "username": "Username",
+            "welcomeMsg": "<h1>Organizing <span style=\"font-weight:bold\">book clubs</span><span style=\"margin-left: 0px\"></span> made easy</h1>",
+            "email": "E-mail",
             "password": "Password",
             "signup": "Sign up",
             "login": "Log in"
@@ -21,27 +21,39 @@
                 "name": {
                     "label": "Your Name",
                     "firstName": "First name",
-                    "lastName": "Last name"
+                    "lastName": "Last name",
+                    "validation": {
+                        "required": "First name required.",
+                        "length": "Must be below 20 characters."
+                    }
                 },
                 "gender": {
                     "label": "Gender",
                     "male": "Male",
                     "female": "Female",
-                    "other": "Other"
+                    "other": "Other",
+                    "validation": "Select gender."
                 },
                 "languages": {
                     "label": "Languages",
-                    "english": "English",
-                    "swedish": "Swedish"
+                    "placeholder": "Select Languages"
                 },
                 "email": {
                     "label": "E-mail Address",
-                    "email": "E-mail"
+                    "email": "E-mail",
+                    "validation": {
+                        "invalid": "Invalid E-mail address.",
+                        "occupied": "Already registered."
+                    }
                 },
                 "password": {
                     "label": "Password",
                     "password": "Password",
-                    "confirmPassword": "Confirm password"
+                    "confirmPassword": "Confirm password",
+                    "validation": {
+                        "minLength": "Must be at least 5 characters.",
+                        "notMatching": "Passwords are not matching."
+                    }
                 }
             },
             "buttons": {

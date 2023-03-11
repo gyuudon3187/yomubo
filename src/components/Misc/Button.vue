@@ -7,7 +7,10 @@ defineProps<{
 </script>
 
 <template>
-    <button :class="buttonProps.type" @click="buttonProps.callback">
+    <button v-if="buttonProps.active?.value === false" class="tertiary" @click="buttonProps.callback" disabled>
+        {{ buttonProps.text }}
+    </button>
+    <button v-else :class="buttonProps.type" @click="buttonProps.callback">
         {{ buttonProps.text }}
     </button>
 </template>
@@ -36,8 +39,14 @@ button {
 
 .tertiary {
     background-color: var(--color-tertiary);
-    border: 2px solid var(--color-tertiary-border);
-    color: var(--color-on-background)
+    color: rgb(248, 248, 248);
+    cursor: default;
+}
+
+.quaternary {
+    background-color: var(--color-quaternary);
+    border: 2px solid var(--color-quaternary-border);
+    color: var(--color-on-background);
 }
 
 .primary:hover, .secondary:hover {
@@ -45,7 +54,7 @@ button {
     box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.08);
 }
 
-.tertiary:hover {
+.quaternary:hover {
     transition: 120ms;
     box-shadow: inset 0 0 100px 100px rgba(0, 0, 0, 0.08);
 }

@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import type { ButtonInterface } from "@/types/misc";
 import { RouterView } from "vue-router";
 import RegistrationModal from "@/components/LandingPage/RegistrationModal.vue";
-import Modal from "../../components/Misc/Modal.vue";
 import Background from "../../components/LandingPage/Background/Background.vue";
 import Header from "../../components/LandingPage/Header.vue";
 import { useModalStore } from "@/stores/modal";
 import { useI18n } from "vue-i18n";
 const modal = useModalStore();
-const { t } = useI18n();
 
 </script>
 

@@ -1,6 +1,27 @@
 @import './base.css';
 @import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
 
+html, body {
+  scrollbar-width: 0.7vw;
+  scrollbar-color: rgb(153, 88, 88);
+}
+
+body {
+  overflow: overlay;
+}
+
+html::-webkit-scrollbar {
+  width: 0.7vw;
+}
+
+/* html::-webkit-scrollbar-thumb {
+  background-color: rgb(211, 172, 172);
+  border-radius: 8px;
+} */
+
+html::-webkit-scrollbar-thumb{
+}
+
 #app {
   position: relative;
   display: flex;

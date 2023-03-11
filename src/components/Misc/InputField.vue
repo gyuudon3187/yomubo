@@ -1,60 +1,79 @@
 <script setup lang="ts">
 import type { InputFieldInterface } from '@/types/misc';
-import { ref } from 'vue';
-defineProps<{
+import { validate, touch, untouch, reset } from '@/util/validation'
+import { watchEffect } from 'vue';
+import ValidationMessage from './ValidationMessage.vue';
+const props = defineProps<{
     inputProps: InputFieldInterface
 }>();
 
-const value = ref("");
+function isPassword(): string {
+  return props.inputProps.password ? "password" : "text";
+}
+
+function dirtyAndError(): boolean | undefined {
+  return props.inputProps.validation?.dirty.value && props.inputProps.validation.error.value
+}
+
 </script>
 
 <template>
-    <div class="test">
-        <input class="input" :class="{filled: value}" v-model="value"/>
-        <label class="label" :class="{filled: value}">{{ inputProps.label }}</label>
-    </div>
+  <div>
+
+    <input 
+      @blur="touch(inputProps.validation); validate($event, inputProps.validation);"
+      @focus="untouch(inputProps.validation)"
+      :type="isPassword()"
+      :class="{filled: inputProps.input.value, neutral: !dirtyAndError(), invalid: dirtyAndError()}" 
+      v-model="inputProps.input.value"/>
+
+    <label class="label" :class="{ filled: inputProps.input.value, inactive: !dirtyAndError(), invalidText: dirtyAndError() }">
+      {{ inputProps.label }}
+    </label>
+    <ValidationMessage v-if="!!inputProps.validation" v-show="dirtyAndError()" :invalid="inputProps.validation.error" :message="inputProps.validation?.displayMessage.value" />
+
+  </div>
 </template>
 
 <style scoped>
-.test {
-    position: relative;
+@import '@/util/validation.css';
+
+input {
+  border-radius: 5px;
+  height: 2rem;
+  outline: none;
+  padding-left: 1rem;
+  transition: all .3s;
 }
 
-.input {
-    background: var(--color-input);
-    border: 2px solid var(--color-header);
-    border-radius: 5px;
-    height: 2rem;
-    outline: none;
-    padding-left: 1rem;
-    transition: all .3s;
-}
-
-.input:focus {
-    border: 2px solid #7C4200;
-}
-
-.input:focus+.label,
-.filled+.label {
+input:focus+.label,
+.filled:focus+.label {
     top: -10px;
-    color:#7C4200;
     font-size: 14px;
 }
 
-.input::placeholder {
-    font-size: 16px;
-    opacity: 0;
-    transition: all .3s;
+.filled:focus.neutral+.label, 
+.neutral:focus+.label {
+  color:#7C4200;
 }
 
-.input:focus::placeholder {
-    opacity: 1;
-    animation-delay: 0.2s;
+.neutral {
+    background: var(--color-input);
+    border: 2px solid var(--color-header);
+}
+
+.neutral:focus {
+    border: 2px solid #7C4200;
+}
+
+.filled+.label {
+    top: -10px;
+    color:#cb9b68;
+    font-size: 14px;
 }
 
 .label {
     position: absolute;
-    color: var(--color-text-inactive);
     left: 10px;
     top: 5px;
     transition: all 0.2s;
@@ -72,5 +91,9 @@ const value = ref("");
     top: 10px;
     width: 100%;
     z-index: -1;
+}
+
+.inactive {
+  color: var(--color-text-inactive);
 }
 </style>

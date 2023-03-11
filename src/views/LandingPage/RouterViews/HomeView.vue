@@ -9,7 +9,7 @@ const modal = useModalStore();
 
 const {
     welcomeMsg,
-    username,
+    email,
     password,
     signup,
     login
@@ -17,11 +17,12 @@ const {
 
 function initializeVariables() {
     const basePath = "landingPage.home.";
+    const isPassword = true;
 
     return {
         welcomeMsg: t(basePath + "welcomeMsg"),
-        username: initializeInputField(basePath + "username"),
-        password: initializeInputField(basePath + "password"),
+        email: initializeInputField("email", basePath),
+        password: initializeInputField("password", basePath, undefined, isPassword),
         signup: initializeButton(basePath + "signup", "primary", modal.open),
         login: initializeButton(basePath + "login", "secondary", () => {}),
     }
@@ -33,12 +34,12 @@ function initializeVariables() {
     <div class="welcomeMsg" v-html="welcomeMsg">
     </div>
     <div class="input">
-        <InputField :inputProps="username" />
+        <InputField :inputProps="email" />
         <InputField :inputProps="password" />
     </div>
     <div class="btn">
-        <Button :buttonProps="signup" />
         <Button :buttonProps="login" />
+        <Button :buttonProps="signup" />
     </div>
   </div>
     
@@ -48,6 +49,10 @@ function initializeVariables() {
 <style scoped>
 .welcomeMsg {
     color: #EDA14A;
+    margin-bottom: 30px;
+    line-height: 1.2;
+    letter-spacing: 0.6px;
+    word-spacing: 2px;
 }
 
 .input > * {
