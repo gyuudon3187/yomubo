@@ -17,6 +17,10 @@ coverage
 /cypress/videos/
 /cypress/screenshots/
 
+# Configurations
+/src/config/
+**/*Config.ts
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

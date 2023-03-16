@@ -11,8 +11,8 @@ function isPrechecked(index: number): boolean {
 
 <template>
   <div v-for="(button, index) in radioButtonProps.buttons">
-    <input v-if="isPrechecked(index)" type="radio" :id="button" :name="radioButtonProps.label" :value="button" checked>
-    <input v-else type="radio" :id="button" :name="radioButtonProps.label" :value="button">
+    <input v-if="isPrechecked(index)" type="radio" :name="radioButtonProps.label" :value="button" checked>
+    <input v-else type="radio" :name="radioButtonProps.label" :value="button">
     <label :for="radioButtonProps.label">{{ button }}</label>
   </div>
 </template>

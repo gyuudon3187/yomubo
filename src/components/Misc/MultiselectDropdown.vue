@@ -13,14 +13,14 @@ const isVisible = ref(false);
 const open = ref("");
 let selectedOptions: string[] = [];
 
-function toggleOption(option: Option) {
+function toggleOption(option: Option): void {
   selectedOptions = selectedOptions.includes(option.label) ? 
                     selectedOptions.filter(selectedOption => selectedOption !== option.label) : 
                     [...selectedOptions, option.label];
   option.selected.value = !option.selected.value;
 }
 
-function filterOptions() {
+function filterOptions(): void {
   props.multiselectProps.options.forEach(option => {
     const firstLettersOfOption = option.label.substring(0, inputFieldProps.input.value.length)
     option.isVisible.value =  firstLettersOfOption.toUpperCase() === inputFieldProps.input.value.toUpperCase() 

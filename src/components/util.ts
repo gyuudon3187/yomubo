@@ -11,27 +11,42 @@ import type {
     ValidationGroup} from "@/types/misc";
 import i18n from "@/i18n";
 import { ref, type Ref } from "vue";
+import { camelize } from "@/util/misc";
 const { t } = i18n.global
 
-export function initializeButtons(path: string, buttons: ButtonInterface[]): ButtonInterface[] {
-  return buttons.map(button => ({
-    text: t(path + button.text),
+export function initializeButtons(path: string, buttons: Omit<ButtonInterface, 'id'>[]): ButtonInterface[] {
+  return buttons.map(button => {
+    const text = t(path + button.text);
+
+    return {
+    id: camelize(text),
+    text,
     type: button.type,
     callback: button.callback,
     active: button.active
-  }))
+    }
+  })
 }
 
-export function initializeButton(path: string, type: ButtonTypes, callback: Function, active?: Ref<boolean> | undefined): ButtonInterface {
+export function initializeButton(path: string, 
+                                 type: ButtonTypes, 
+                                 callback: Function, 
+                                 active?: Ref<boolean> | undefined): ButtonInterface {
+  const text = t(path);
+
   return {
-    text: t(path),
+    id: camelize(text),
+    text,
     type,
     callback,
     active
   }
 }
 
-export function initializeInputField(id: string | number, path: string, validation?: ValidationGroup, password?: boolean): InputFieldInterface {
+export function initializeInputField(id: string,
+                                     path: string, 
+                                     validation?: ValidationGroup, 
+                                     password?: boolean): InputFieldInterface {
   return {
     __typename: "InputFieldInterface",
     id,
@@ -42,7 +57,11 @@ export function initializeInputField(id: string | number, path: string, validati
   }
 }
 
-export function initializeRadioButton(id: string | number, path: string, buttons: string[], validation?: ValidationGroup, checkedIndex?: number): RadioButtonInterface {
+export function initializeRadioButton(id: string, 
+                                      path: string, 
+                                      buttons: string[], 
+                                      validation?: ValidationGroup, 
+                                      checkedIndex?: number): RadioButtonInterface {
   return {
     __typename: "RadioButtonInterface",
     id,
@@ -53,16 +72,17 @@ export function initializeRadioButton(id: string | number, path: string, buttons
   }
 }
 
-export function initializeMultiselectDropdown(id: string | number, path: string, optionNames: string[], customOptions?: boolean, validation?: Validation[]): MultiselectDropdownInterface {
-  const options: Option[] = customOptions ? 
-  optionNames.map(optionName => ({
-    label: optionName,
-    selected: ref(false),
-    isVisible: ref(true),
-    validation
-  })) :
-  optionNames.map(optionName => ({
-    label: t(path + optionName), 
+export function initializeMultiselectDropdown(id: string, 
+                                              path: string, 
+                                              optionNames: string[], 
+                                              noTranslation?: boolean, 
+                                              validation?: Validation[]): MultiselectDropdownInterface {
+  const processOption = noTranslation ? 
+    (optionName: string): string => optionName : 
+    (optionName: string): string => t(path + optionName);
+  
+  const options: Option[] = optionNames.map(optionName => ({
+    label: processOption(optionName), 
     selected: ref(false),
     isVisible: ref(true),
     validation

@@ -19,10 +19,15 @@ function initializeVariables() {
     const basePath = "landingPage.home.";
     const isPassword = true;
 
+    enum InputId {
+        Email = "loginEmail",
+        Password = "loginPassword"
+    }
+
     return {
         welcomeMsg: t(basePath + "welcomeMsg"),
-        email: initializeInputField("email", basePath),
-        password: initializeInputField("password", basePath, undefined, isPassword),
+        email: initializeInputField(InputId.Email, basePath),
+        password: initializeInputField(InputId.Password, basePath, undefined, isPassword),
         signup: initializeButton(basePath + "signup", "primary", modal.open),
         login: initializeButton(basePath + "login", "secondary", () => {}),
     }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { InputFieldInterface } from '@/types/misc';
-import { validate, touch, untouch, reset } from '@/util/validation'
+import { validate, touch, untouch } from '@/util/validation'
 import { watchEffect } from 'vue';
 import ValidationMessage from './ValidationMessage.vue';
 const props = defineProps<{
@@ -23,6 +23,7 @@ function dirtyAndError(): boolean | undefined {
     <input 
       @blur="touch(inputProps.validation); validate($event, inputProps.validation);"
       @focus="untouch(inputProps.validation)"
+      :id="inputProps.id"
       :type="isPassword()"
       :class="{filled: inputProps.input.value, neutral: !dirtyAndError(), invalid: dirtyAndError()}" 
       v-model="inputProps.input.value"/>
@@ -30,7 +31,7 @@ function dirtyAndError(): boolean | undefined {
     <label class="label" :class="{ filled: inputProps.input.value, inactive: !dirtyAndError(), invalidText: dirtyAndError() }">
       {{ inputProps.label }}
     </label>
-    <ValidationMessage v-if="!!inputProps.validation" v-show="dirtyAndError()" :invalid="inputProps.validation.error" :message="inputProps.validation?.displayMessage.value" />
+    <ValidationMessage v-if="!!inputProps.validation" :id="inputProps.id + 'Validation'" v-show="dirtyAndError()" :invalid="inputProps.validation.error" :message="inputProps.validation?.displayMessage.value" />
 
   </div>
 </template>

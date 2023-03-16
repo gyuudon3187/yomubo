@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import type { ButtonInterface } from "@/types/misc";
 
-defineProps<{
+const props = defineProps<{
     buttonProps: ButtonInterface
 }>();
+
 </script>
 
 <template>
-    <button v-if="buttonProps.active?.value === false" class="tertiary" @click="buttonProps.callback" disabled>
+    <button v-if="buttonProps.active?.value === false" :id="buttonProps.id" class="tertiary" @click="buttonProps.callback" disabled>
         {{ buttonProps.text }}
     </button>
-    <button v-else :class="buttonProps.type" @click="buttonProps.callback">
+    <button v-else :id="buttonProps.id" :class="buttonProps.type" @click="buttonProps.callback">
         {{ buttonProps.text }}
     </button>
 </template>

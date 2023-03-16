@@ -13,7 +13,7 @@ import MultiselectDropdown from './MultiselectDropdown.vue';
 import { useModalStore } from '@/stores/modal';
 const modal = useModalStore();
 
-const props = defineProps<{
+defineProps<{
   header: string,
   componentGroups?: InputComponentGroup[]
   buttons: ButtonInterface[]

@@ -45,7 +45,7 @@ export interface Validation {
 }
 
 interface HasId {
-    id: string | number
+    id: string | undefined
 }
 
 interface HasLabel {
@@ -57,6 +57,7 @@ interface HasValidation {
 }
 
 export interface ButtonInterface {
+    id: string,
     text: string,
     type: ButtonTypes,
     callback: Function,

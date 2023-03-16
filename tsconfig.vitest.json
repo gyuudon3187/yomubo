@@ -7,6 +7,8 @@
     "types": ["node", "jsdom", "vite/client"]
   },
   "include": [
-    "src/**/*.json"
+    "src/**/*.json",
+    "src/**/*.vue",
+    "src/**/*"
   ]
 }

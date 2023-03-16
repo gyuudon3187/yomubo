@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { InputComponentGroup, Validation, ValidationGroup } from "@/types/misc";
 import Modal from "../../components/Misc/Modal.vue";
 import { useI18n } from "vue-i18n";
 import { useModalStore } from "@/stores/modal";
@@ -9,8 +8,7 @@ import {
   initializeInputField,
   initializeRadioButton,
   initializeMultiselectDropdown,
-  initializeInputComponentGroup,
-  isInputField } from "@/components/util";
+  initializeInputComponentGroup } from "@/components/util";
 import { 
   confirmPassword,
   getValidationPath,
@@ -18,143 +16,40 @@ import {
   required,
   minLength,
   maxLength,
-  emailFormat } from "@/util/validation";
-import { ref, watchEffect } from "vue";
-import { isDate } from "@vue/shared";
+  emailFormat, 
+  validateAll,
+  touchAll,
+  ValidationId, 
+  nameFormat,
+  firstLetterCapitalized } from "@/util/validation";
+import type { ButtonInterface, InputComponentGroup, ValidationGroup } from "@/types/misc";
 const { t } = useI18n();
 const { close } = useModalStore();
-
-enum Ids {
-  FirstName = "firstName",
-  LastName = "lastName",
-  Gender = "gender",
-  Languages = "languages",
-  Email = "email",
-  Password = "password",
-  ConfirmPassword = "confirmPassword"
-}
 
 const {
   header,
   componentGroups,
   buttons,
-  allValidations
+  requiredFields
 } = initializeVariables()
 
-function initializeVariables() {
+function initializeVariables(): { header: string,
+                                  componentGroups: InputComponentGroup[],
+                                  buttons: ButtonInterface[],
+                                  requiredFields: string[],
+                                  allValidations: ValidationGroup[]} {
   const basePath = "landingPage.registration.";
   const buttonsPath = basePath + "buttons.";
   const { componentGroups, allValidations } = initializeInputComponentGroupsAndValidations();
 
-  function initializeInputComponentGroupsAndValidations() {
-    const inputPath = basePath + "input.";
-    const namePath = inputPath + "name.";
-    const genderPath = inputPath + "gender.";
-    const languagesPath = inputPath + "languages.";
-    const emailPath = inputPath + "email.";
-    const passwordPath = inputPath + "password.";
-
-    const isPassword = true;
-    const checkedIndex = 2;
-    const customOptionsEnabled = true;
-    
-    const {
-      firstNameValidation,
-      emailValidation,
-      passwordValidation } = initializeValidations();
-
-    const nameGroup = initializeInputComponentGroup(namePath + "label", [
-      initializeInputField(Ids.FirstName, namePath, firstNameValidation),
-      initializeInputField(Ids.LastName, namePath)
-    ])
-
-    const genderGroup = initializeInputComponentGroup(genderPath + "label", [
-      initializeRadioButton(Ids.Gender, genderPath, ["male", "female", "other"], undefined, checkedIndex)
-    ])
-
-
-    interface Language {
-      [language: string]: {
-        name: string,
-        nativeName: string
-      }
-    }
-
-    const typedLanguages: Language = untypedLanguages;
-    const languages: string[] = Object.keys(typedLanguages).map(language => {
-      return typedLanguages[language as keyof Language].name
-    })
-    
-    const languagesGroup = initializeInputComponentGroup(languagesPath + "label", [
-      initializeMultiselectDropdown(Ids.Languages, languagesPath, languages, customOptionsEnabled)
-    ])
-
-    const emailGroup = initializeInputComponentGroup(emailPath + "label", [
-      initializeInputField(Ids.Email, emailPath, emailValidation)
-    ])
-
-    const passwordField = initializeInputField(Ids.Password, passwordPath, passwordValidation, isPassword)
-    const passwordValidationPath = getValidationPath(passwordPath);
-    const confirmPasswordValidation = initializeValidationGroup([
-        { validator: confirmPassword, message: t(passwordValidationPath + "notMatching"), params: passwordField.input }
-      ])
-    const passwordGroup = initializeInputComponentGroup(passwordPath + "label", [
-      passwordField,
-      initializeInputField(Ids.ConfirmPassword, passwordPath, confirmPasswordValidation, isPassword)
-    ])
-
-    function initializeValidations() {
-      
-      const nameValidationPath = getValidationPath(namePath);
-      const firstNameValidation = initializeValidationGroup([
-        { validator: required, message: t(nameValidationPath + "required") },
-        { validator: maxLength, message: t(nameValidationPath + "length"), params: 20}
-      ])
-
-      const emailValidationPath = getValidationPath(emailPath);
-      const emailValidation = initializeValidationGroup([
-        { validator: emailFormat, message: t(emailValidationPath + "invalid") }
-      ])
-
-      const passwordValidationPath = getValidationPath(passwordPath);
-      const passwordValidation = initializeValidationGroup([
-        { validator: minLength, message: t(passwordValidationPath + "minLength"), params: 5 }
-      ])
-
-      return {
-        firstNameValidation,
-        emailValidation,
-        passwordValidation
-      }
-    }
-
-    return {
-    componentGroups: [
-      nameGroup,
-      genderGroup,
-      languagesGroup,
-      emailGroup,
-      passwordGroup
-    ], 
-    allValidations: [
-      firstNameValidation,
-      emailValidation,
-      passwordValidation,
-      confirmPasswordValidation
-    ]}
-  }
-
-  function submit(): void {
-    if(allValidations.every(validation => validation.error.value === false) &&
-    componentGroups.flatMap(group => {
-      return group.components.filter(comp => {
-        return [Ids.FirstName, Ids.Email, Ids.Password, Ids.ConfirmPassword].some(id => id === comp.id)
-      })
-    }).map(comp => {
-      if(isInputField(comp)) {
-        return comp.input.value
-      }
-    }).every(input => input !== "")) console.log("hi")
+  enum InputId {
+    FirstName = "firstName",
+    LastName = "lastName",
+    Gender = "gender",
+    Languages = "languages",
+    Email = "registrationEmail",
+    Password = "registrationPassword",
+    ConfirmPassword = "confirmPassword"
   }
 
   return {
@@ -162,25 +57,193 @@ function initializeVariables() {
     componentGroups,
     buttons: initializeButtons(buttonsPath, [
       {text: "return", type: "quaternary", callback: close},
-      {text: "submit", type: "primary", callback: () => {}}
+      {text: "submit", type: "primary", callback: submit}
     ]),
+    requiredFields: [InputId.FirstName, InputId.Email, InputId.Password, InputId.ConfirmPassword],
     allValidations
   }
-}
 
-watchEffect(() => {
-  // console.log(
-  //   allValidations.every(validation => validation.error.value === false) &&
-  //   componentGroups.flatMap(group => {
-  //     return group.components.filter(comp => {
-  //       return [Ids.FirstName, Ids.Email, Ids.Password, Ids.ConfirmPassword].some(id => id === comp.id)
-  //     })
-  //   }).map(comp => {
-  //     if(isInputField(comp)) {
-  //       return comp.input.value
-  //     }
-  //   }).every(input => input !== ""))
-})
+  function submit(): void {
+    if(validateAll(allValidations, componentGroups, requiredFields)) {
+    } else {
+      touchAll(allValidations);
+    };
+  }
+
+  function initializeInputComponentGroupsAndValidations(): { componentGroups: InputComponentGroup[],
+                                                             allValidations: ValidationGroup[] } {
+    const inputPath = basePath + "input.";
+    const namePath = inputPath + "name.";
+    const genderPath = inputPath + "gender.";
+    const languagesPath = inputPath + "languages.";
+    const emailPath = inputPath + "email.";
+    const passwordPath = inputPath + "password.";
+    const passwordValidationPath = getValidationPath(passwordPath);
+
+    const {
+      firstNameValidation,
+      emailValidation,
+      passwordValidation } = initializeValidations();
+
+    const { 
+      nameGroup,
+      genderGroup,
+      languagesGroup,
+      emailGroup } = initializeComponentGroups();
+    
+    const { passwordGroup, confirmPasswordValidation } = initializePasswordGroupAndConfirmValidation();
+
+    return {
+      componentGroups: [
+        nameGroup,
+        genderGroup,
+        languagesGroup,
+        emailGroup,
+        passwordGroup
+      ], 
+      allValidations: [
+        firstNameValidation,
+        emailValidation,
+        passwordValidation,
+        confirmPasswordValidation
+      ]
+    }
+
+    function initializeComponentGroups(): { nameGroup: InputComponentGroup,
+                                            genderGroup: InputComponentGroup,
+                                            languagesGroup: InputComponentGroup,
+                                            emailGroup: InputComponentGroup } {
+      return {
+        nameGroup: initializeNameGroup(),
+        genderGroup: initializeGenderGroup(),
+        languagesGroup: initializeLanguagesGroup(),
+        emailGroup: initializeEmailGroup(),
+      }
+
+      function initializeNameGroup(): InputComponentGroup {
+        const nameLabelPath = getLabelPath(namePath);
+        const nameGroup = initializeInputComponentGroup(nameLabelPath, [
+          initializeInputField(InputId.FirstName, namePath, firstNameValidation),
+          initializeInputField(InputId.LastName, namePath)
+        ]);
+
+        return nameGroup;
+      }
+
+      function initializeGenderGroup(): InputComponentGroup {
+        enum Gender {
+          Male = "male",
+          Female = "female",
+          Other = "other"
+        }
+
+        const genders = Object.values(Gender);
+        const checkedIndex = genders.indexOf(Gender.Other);
+        const genderLabelPath = getLabelPath(genderPath);
+        const genderGroup = initializeInputComponentGroup(genderLabelPath, [
+          initializeRadioButton(InputId.Gender, genderPath, genders, undefined, checkedIndex)
+        ]);
+
+        return genderGroup;
+      }
+
+      function initializeLanguagesGroup(): InputComponentGroup {
+        interface Language {
+          [language: string]: {
+            name: string,
+            nativeName: string
+          }
+        }
+
+        const typedLanguages: Language = untypedLanguages;
+        const languages: string[] = Object.keys(typedLanguages).map(language => {
+          return typedLanguages[language as keyof Language].name
+        });
+        
+        const noTranslation = true;
+        const languagesLabelPath = getLabelPath(languagesPath)
+        const languagesGroup = initializeInputComponentGroup(languagesLabelPath, [
+          initializeMultiselectDropdown(InputId.Languages, languagesPath, languages, noTranslation)
+        ]);
+
+        return languagesGroup;
+      }
+
+      function initializeEmailGroup(): InputComponentGroup {
+        const emailLabelPath = getLabelPath(emailPath);
+        const emailGroup = initializeInputComponentGroup(emailLabelPath, [
+          initializeInputField(InputId.Email, emailPath, emailValidation)
+        ]);
+
+        return emailGroup;
+      }
+    }
+
+    function initializeValidations(): { firstNameValidation: ValidationGroup,
+                                        emailValidation: ValidationGroup,
+                                        passwordValidation: ValidationGroup } {
+      return {
+        firstNameValidation: initializeFirstNameValidation(),
+        emailValidation: initializeEmailValidation(),
+        passwordValidation: initializePasswordValidation()
+      }
+
+      function initializeFirstNameValidation(): ValidationGroup {
+        const nameValidationPath = getValidationPath(namePath);
+        const firstNameValidation = initializeValidationGroup([
+          { validator: required, message: t("validation." + ValidationId.Required) },
+          { validator: maxLength, message: t(nameValidationPath + ValidationId.MaxLength), params: 20 },
+          { validator: firstLetterCapitalized, message: t(nameValidationPath + ValidationId.FirstLetterCapitalized) },
+          { validator: nameFormat, message: t(nameValidationPath + ValidationId.Alphabetical) }
+        ]);
+
+        return firstNameValidation
+      }
+
+      function initializeEmailValidation(): ValidationGroup {
+        const emailValidationPath = getValidationPath(emailPath);
+        const emailValidation = initializeValidationGroup([
+          { validator: required, message: t("validation." + ValidationId.Required)},
+          { validator: emailFormat, message: t(emailValidationPath + ValidationId.Invalid) }
+        ]);
+
+        return emailValidation;
+      }
+
+      function initializePasswordValidation(): ValidationGroup {
+        
+        const passwordValidation = initializeValidationGroup([
+          { validator: required, message: t("validation." + ValidationId.Required) },
+          { validator: minLength, message: t(passwordValidationPath + ValidationId.MinLength), params: 5 }
+        ]);
+
+        return passwordValidation;
+      }
+    }
+
+    function initializePasswordGroupAndConfirmValidation(): { passwordGroup: InputComponentGroup,
+                                                              confirmPasswordValidation: ValidationGroup } {
+      const isPassword = true;
+
+      const passwordField = initializeInputField(InputId.Password, passwordPath, passwordValidation, isPassword)
+      const confirmPasswordValidation = initializeValidationGroup([
+          { validator: confirmPassword, message: t(passwordValidationPath + ValidationId.NotMatching), params: passwordField.input }
+        ]);
+
+      const passwordLabelPath = getLabelPath(passwordPath);
+      const passwordGroup = initializeInputComponentGroup(passwordLabelPath, [
+        passwordField,
+        initializeInputField(InputId.ConfirmPassword, passwordPath, confirmPasswordValidation, isPassword)
+      ]);
+
+      return { passwordGroup, confirmPasswordValidation }
+    }
+  }
+
+  function getLabelPath(path: string): string {
+    return path + "label";
+  }
+}
 </script>
 
 <template>
