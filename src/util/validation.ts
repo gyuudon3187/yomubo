@@ -67,8 +67,6 @@ export function emailFormat(e: Event, params?: any): boolean {
 
 export function confirmPassword(e: Event, password: Ref<string>): boolean {
     const target = <HTMLInputElement>e.target;
-    console.log("the value of password:")
-    console.log(password.value);
     return target.value !== password.value;
 }
 

@@ -6,15 +6,15 @@ import { initializeInputField } from '../util';
 import InputField from '@/components/Misc/InputField.vue'
 const props = defineProps<{
   multiselectProps: MultiselectDropdownInterface
-}>()
+}>();
 
 const inputFieldProps = initializeInputField("placeholder", props.multiselectProps.placeholderPath);
 const isVisible = ref(false);
 const open = ref("");
-let selectedOptions: string[] = [];
 
 function toggleOption(option: Option): void {
-  selectedOptions = selectedOptions.includes(option.label) ? 
+  const selectedOptions = props.multiselectProps.input.value;
+  props.multiselectProps.input.value = selectedOptions.includes(option.label) ? 
                     selectedOptions.filter(selectedOption => selectedOption !== option.label) : 
                     [...selectedOptions, option.label];
   option.selected.value = !option.selected.value;
@@ -22,9 +22,9 @@ function toggleOption(option: Option): void {
 
 function filterOptions(): void {
   props.multiselectProps.options.forEach(option => {
-    const firstLettersOfOption = option.label.substring(0, inputFieldProps.input.value.length)
+    const firstLettersOfOption = option.label.substring(0, inputFieldProps.input.value.length);
     option.isVisible.value =  firstLettersOfOption.toUpperCase() === inputFieldProps.input.value.toUpperCase() 
-                              || !inputFieldProps.input.value
+                              || !inputFieldProps.input.value;
   });
 }
 
@@ -36,14 +36,18 @@ function openDropdown(): void {
 function closeDropdownOnOutsideClick({target}: MouseEvent): void {
   assertIsNode(target);
   if(!document.querySelector(".select-container")?.contains(target)) {
+    resetFilter();
+  }
+
+  function resetFilter() {
     isVisible.value = false;
     open.value = "";
     inputFieldProps.input.value = "";
-    delayResetSoThatTransitionLooksNatural()
-  }
+    delayResetSoThatTransitionLooksNatural();
 
-  function delayResetSoThatTransitionLooksNatural() {
-    setTimeout(() => filterOptions(), 100);
+    function delayResetSoThatTransitionLooksNatural() {
+      setTimeout(filterOptions, 100);
+    }
   }
 }
 
@@ -58,7 +62,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="select-container">
+  <div :id="multiselectProps.id" class="select-container">
     <div @mousedown="openDropdown()" class="select-btn">
       <InputField @input="filterOptions()" :inputProps="inputFieldProps" />
       <span class="arrow-dwn" :class="open">

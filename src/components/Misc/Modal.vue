@@ -8,8 +8,9 @@ import {
   isMultiselectDropdown} from '@/components/util'
 import Button from '@/components/Misc/Button.vue';
 import Input from '@/components/Misc/InputField.vue';
-import RadioButton from '@/components/Misc/RadioButton.vue'
+import RadioButton from '@/components/Misc/RadioButton.vue';
 import MultiselectDropdown from './MultiselectDropdown.vue';
+import Loading from './Loading.vue';
 import { useModalStore } from '@/stores/modal';
 const modal = useModalStore();
 
@@ -32,6 +33,7 @@ function close({target}: MouseEvent) {
     <div id="modal" @mousedown="close($event)">
       <Transition name="slide-down" mode="out-in">
         <div class="modal-content">
+          <Loading />
           
           <header class="container">
             <h2>{{ header }}</h2>
@@ -82,6 +84,7 @@ function close({target}: MouseEvent) {
   background-color: #fefefe;
   border-radius: 20px;
   filter: drop-shadow(1.5px 3px 0.15em rgba(0, 0, 0, 0.5));
+  position: relative;
   margin: 3% auto;
   border: 1px solid #888;
   width: 36%;

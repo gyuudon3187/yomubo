@@ -28,10 +28,21 @@ function dirtyAndError(): boolean | undefined {
       :class="{filled: inputProps.input.value, neutral: !dirtyAndError(), invalid: dirtyAndError()}" 
       v-model="inputProps.input.value"/>
 
-    <label class="label" :class="{ filled: inputProps.input.value, inactive: !dirtyAndError(), invalidText: dirtyAndError() }">
+    <label 
+      class="label" 
+      :class="{ 
+        filled: inputProps.input.value, 
+        inactive: !dirtyAndError(), 
+        invalidText: dirtyAndError() 
+      }">
       {{ inputProps.label }}
     </label>
-    <ValidationMessage v-if="!!inputProps.validation" :id="inputProps.id + 'Validation'" v-show="dirtyAndError()" :invalid="inputProps.validation.error" :message="inputProps.validation?.displayMessage.value" />
+    <ValidationMessage 
+      v-if="!!inputProps.validation" 
+      :id="inputProps.id + 'Validation'" 
+      v-show="dirtyAndError()" 
+      :invalid="inputProps.validation.error" 
+      :message="inputProps.validation?.displayMessage.value" />
 
   </div>
 </template>

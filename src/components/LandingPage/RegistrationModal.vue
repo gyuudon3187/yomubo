@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Modal from "../../components/Misc/Modal.vue";
 import { useI18n } from "vue-i18n";
+import { useAuthStore } from "@/stores/auth"
 import { useModalStore } from "@/stores/modal";
 import untypedLanguages from '@/i18n/languages.json';
 import {
@@ -23,7 +24,9 @@ import {
   nameFormat,
   firstLetterCapitalized } from "@/util/validation";
 import type { ButtonInterface, InputComponentGroup, ValidationGroup } from "@/types/misc";
+import { ref, type Ref } from "vue";
 const { t } = useI18n();
+const { createUser } = useAuthStore();
 const { close } = useModalStore();
 
 const {
@@ -38,9 +41,12 @@ function initializeVariables(): { header: string,
                                   buttons: ButtonInterface[],
                                   requiredFields: string[],
                                   allValidations: ValidationGroup[]} {
-  const basePath = "landingPage.registration.";
-  const buttonsPath = basePath + "buttons.";
-  const { componentGroups, allValidations } = initializeInputComponentGroupsAndValidations();
+  const firstNameInput = ref("");
+  const lastNameInput = ref("");
+  const genderInput = ref("");
+  const languagesInput: Ref<string[]> = ref([]);
+  const emailInput = ref("");
+  const passwordInput = ref("");
 
   enum InputId {
     FirstName = "firstName",
@@ -51,6 +57,11 @@ function initializeVariables(): { header: string,
     Password = "registrationPassword",
     ConfirmPassword = "confirmPassword"
   }
+
+  const basePath = "landingPage.registration.";
+  const buttonsPath = basePath + "buttons.";
+
+  const { componentGroups, allValidations } = initializeInputComponentGroupsAndValidations();
 
   return {
     header: t(basePath + "header"),
@@ -65,6 +76,14 @@ function initializeVariables(): { header: string,
 
   function submit(): void {
     if(validateAll(allValidations, componentGroups, requiredFields)) {
+      createUser({
+        firstName: firstNameInput.value,
+        lastName: lastNameInput.value,
+        email: emailInput.value,
+        password: passwordInput.value,
+        gender: genderInput.value,
+        languages: languagesInput.value
+      }, componentGroups);
     } else {
       touchAll(allValidations);
     };
@@ -123,8 +142,8 @@ function initializeVariables(): { header: string,
       function initializeNameGroup(): InputComponentGroup {
         const nameLabelPath = getLabelPath(namePath);
         const nameGroup = initializeInputComponentGroup(nameLabelPath, [
-          initializeInputField(InputId.FirstName, namePath, firstNameValidation),
-          initializeInputField(InputId.LastName, namePath)
+          initializeInputField(InputId.FirstName, namePath, firstNameInput, firstNameValidation),
+          initializeInputField(InputId.LastName, namePath, lastNameInput)
         ]);
 
         return nameGroup;
@@ -141,7 +160,7 @@ function initializeVariables(): { header: string,
         const checkedIndex = genders.indexOf(Gender.Other);
         const genderLabelPath = getLabelPath(genderPath);
         const genderGroup = initializeInputComponentGroup(genderLabelPath, [
-          initializeRadioButton(InputId.Gender, genderPath, genders, undefined, checkedIndex)
+          initializeRadioButton(InputId.Gender, genderPath, genders, genderInput, undefined, checkedIndex)
         ]);
 
         return genderGroup;
@@ -163,7 +182,7 @@ function initializeVariables(): { header: string,
         const noTranslation = true;
         const languagesLabelPath = getLabelPath(languagesPath)
         const languagesGroup = initializeInputComponentGroup(languagesLabelPath, [
-          initializeMultiselectDropdown(InputId.Languages, languagesPath, languages, noTranslation)
+          initializeMultiselectDropdown(InputId.Languages, languagesPath, languages, languagesInput, undefined, noTranslation)
         ]);
 
         return languagesGroup;
@@ -172,7 +191,7 @@ function initializeVariables(): { header: string,
       function initializeEmailGroup(): InputComponentGroup {
         const emailLabelPath = getLabelPath(emailPath);
         const emailGroup = initializeInputComponentGroup(emailLabelPath, [
-          initializeInputField(InputId.Email, emailPath, emailValidation)
+          initializeInputField(InputId.Email, emailPath, emailInput, emailValidation)
         ]);
 
         return emailGroup;
@@ -182,16 +201,18 @@ function initializeVariables(): { header: string,
     function initializeValidations(): { firstNameValidation: ValidationGroup,
                                         emailValidation: ValidationGroup,
                                         passwordValidation: ValidationGroup } {
+      const validationBasePath = "validation.";
+
       return {
         firstNameValidation: initializeFirstNameValidation(),
         emailValidation: initializeEmailValidation(),
         passwordValidation: initializePasswordValidation()
       }
-
+      
       function initializeFirstNameValidation(): ValidationGroup {
         const nameValidationPath = getValidationPath(namePath);
         const firstNameValidation = initializeValidationGroup([
-          { validator: required, message: t("validation." + ValidationId.Required) },
+          { validator: required, message: t(validationBasePath + ValidationId.Required) },
           { validator: maxLength, message: t(nameValidationPath + ValidationId.MaxLength), params: 20 },
           { validator: firstLetterCapitalized, message: t(nameValidationPath + ValidationId.FirstLetterCapitalized) },
           { validator: nameFormat, message: t(nameValidationPath + ValidationId.Alphabetical) }
@@ -203,7 +224,7 @@ function initializeVariables(): { header: string,
       function initializeEmailValidation(): ValidationGroup {
         const emailValidationPath = getValidationPath(emailPath);
         const emailValidation = initializeValidationGroup([
-          { validator: required, message: t("validation." + ValidationId.Required)},
+          { validator: required, message: t(validationBasePath + ValidationId.Required)},
           { validator: emailFormat, message: t(emailValidationPath + ValidationId.Invalid) }
         ]);
 
@@ -213,8 +234,8 @@ function initializeVariables(): { header: string,
       function initializePasswordValidation(): ValidationGroup {
         
         const passwordValidation = initializeValidationGroup([
-          { validator: required, message: t("validation." + ValidationId.Required) },
-          { validator: minLength, message: t(passwordValidationPath + ValidationId.MinLength), params: 5 }
+          { validator: required, message: t(validationBasePath + ValidationId.Required) },
+          { validator: minLength, message: t(passwordValidationPath + ValidationId.MinLength), params: 6 }
         ]);
 
         return passwordValidation;
@@ -225,7 +246,7 @@ function initializeVariables(): { header: string,
                                                               confirmPasswordValidation: ValidationGroup } {
       const isPassword = true;
 
-      const passwordField = initializeInputField(InputId.Password, passwordPath, passwordValidation, isPassword)
+      const passwordField = initializeInputField(InputId.Password, passwordPath, passwordInput, passwordValidation, isPassword)
       const confirmPasswordValidation = initializeValidationGroup([
           { validator: confirmPassword, message: t(passwordValidationPath + ValidationId.NotMatching), params: passwordField.input }
         ]);
@@ -233,7 +254,7 @@ function initializeVariables(): { header: string,
       const passwordLabelPath = getLabelPath(passwordPath);
       const passwordGroup = initializeInputComponentGroup(passwordLabelPath, [
         passwordField,
-        initializeInputField(InputId.ConfirmPassword, passwordPath, confirmPasswordValidation, isPassword)
+        initializeInputField(InputId.ConfirmPassword, passwordPath, undefined, confirmPasswordValidation, isPassword)
       ]);
 
       return { passwordGroup, confirmPasswordValidation }

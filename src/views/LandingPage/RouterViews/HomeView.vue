@@ -4,6 +4,7 @@ import Button from '../../../components/Misc/Button.vue';
 import { initializeButton, initializeInputField } from "@/components/util";
 import { useI18n } from 'vue-i18n';
 import { useModalStore } from '@/stores/modal';
+import { ref } from 'vue';
 const { t } = useI18n();
 const modal = useModalStore();
 
@@ -13,11 +14,14 @@ const {
     password,
     signup,
     login
-} = initializeVariables()
+} = initializeVariables();
 
 function initializeVariables() {
     const basePath = "landingPage.home.";
     const isPassword = true;
+
+    const emailInput = ref("");
+    const passwordInput = ref("");
 
     enum InputId {
         Email = "loginEmail",
@@ -26,8 +30,8 @@ function initializeVariables() {
 
     return {
         welcomeMsg: t(basePath + "welcomeMsg"),
-        email: initializeInputField(InputId.Email, basePath),
-        password: initializeInputField(InputId.Password, basePath, undefined, isPassword),
+        email: initializeInputField(InputId.Email, basePath, emailInput),
+        password: initializeInputField(InputId.Password, basePath, passwordInput, undefined, isPassword),
         signup: initializeButton(basePath + "signup", "primary", modal.open),
         login: initializeButton(basePath + "login", "secondary", () => {}),
     }

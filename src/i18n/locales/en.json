@@ -46,7 +46,7 @@
                     "registrationEmail": "E-mail",
                     "validation": {
                         "invalid": "Invalid E-mail address.",
-                        "occupied": "Already registered."
+                        "occupied": "E-mail already registered."
                     }
                 },
                 "password": {

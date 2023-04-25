@@ -45,13 +45,14 @@ export function initializeButton(path: string,
 
 export function initializeInputField(id: string,
                                      path: string, 
+                                     initialInput?: Ref<string>,
                                      validation?: ValidationGroup, 
                                      password?: boolean): InputFieldInterface {
   return {
     __typename: "InputFieldInterface",
     id,
     label: t(path + id),
-    input: ref(""),
+    input: initialInput ? initialInput : ref(""),
     password,
     validation
   }
@@ -60,6 +61,7 @@ export function initializeInputField(id: string,
 export function initializeRadioButton(id: string, 
                                       path: string, 
                                       buttons: string[], 
+                                      initialInput: Ref<string>,
                                       validation?: ValidationGroup, 
                                       checkedIndex?: number): RadioButtonInterface {
   return {
@@ -67,6 +69,7 @@ export function initializeRadioButton(id: string,
     id,
     label: t(path + "label"),
     buttons: buttons.map(button => t(path + button)),
+    input: initialInput,
     validation,
     checkedIndex
   }
@@ -74,9 +77,10 @@ export function initializeRadioButton(id: string,
 
 export function initializeMultiselectDropdown(id: string, 
                                               path: string, 
-                                              optionNames: string[], 
-                                              noTranslation?: boolean, 
-                                              validation?: Validation[]): MultiselectDropdownInterface {
+                                              optionNames: string[],
+                                              initialInput: Ref<string[]>,
+                                              validation?: Validation[],
+                                              noTranslation?: boolean): MultiselectDropdownInterface {
   const processOption = noTranslation ? 
     (optionName: string): string => optionName : 
     (optionName: string): string => t(path + optionName);
@@ -93,6 +97,7 @@ export function initializeMultiselectDropdown(id: string,
     id,
     label: t(path + "label"),
     options,
+    input: initialInput,
     placeholderPath: path
   }
 }

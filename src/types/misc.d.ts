@@ -15,12 +15,14 @@ export interface InputFieldInterface extends HasId, HasLabel, HasValidation {
 export interface RadioButtonInterface extends HasId, HasLabel, HasValidation {
     __typename: "RadioButtonInterface",
     buttons: string[],
+    input: Ref<string>,
     checkedIndex?: number
 }
 
 export interface MultiselectDropdownInterface extends HasId, HasLabel, HasValidation {
     __typename: "MultiselectDropdownInterface",
     options: Option[],
+    input: Ref<string[]>,
     placeholderPath: string
 }
 

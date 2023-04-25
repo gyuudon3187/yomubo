@@ -1,5 +1,7 @@
 import { createApp } from "vue/dist/vue.esm-bundler";
 import { createPinia } from "pinia";
+import { VueFire, VueFireAuth } from 'vuefire';
+import { firebaseApp } from '@/config/firebaseConfig';
 
 import App from "./App.vue";
 import router from "./router";
@@ -19,6 +21,12 @@ const app = createApp(App);
 app.use(createPinia());
 app.use(router);
 app.use(i18n);
+app.use(VueFire, {
+    firebaseApp,
+    modules: [
+        VueFireAuth()
+    ]
+})
 app.component('Icon', FontAwesomeIcon)
 
 app.mount("#app");
