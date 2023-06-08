@@ -10,6 +10,7 @@
   --vt-c-dark-orange: #EE864B;
   --vt-c-gray-black: #313131;
   --vt-c-red: #FC4F59;
+  --vt-c-light-green: #67EEB0;
 
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -41,6 +42,7 @@
 
   /* validation */
   --color-negative: var(--vt-c-red);
+  --color-positive: var(--vt-c-light-green);
   
   /* input */
   --color-input: var(--vt-c-light-gray);
@@ -55,6 +57,7 @@
   /* text */
   --color-on-primary: var(--vt-c-beige);
   --color-on-background: var(--vt-c-gray-black);
+  --color-alt-on-background: var(--vt-c-dark-gray);
 
   --color-header: var(--vt-c-light-salmon);
 
@@ -96,7 +99,7 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-background);
+  background: #ffffff;
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,

@@ -8,6 +8,16 @@ const routes = [
     component: LandingPageView,
   },
   {
+    path: "/clubs",
+    name: "clubs",
+    component: '<div></div>'
+  },
+  {
+    path: "/books",
+    name: "books",
+    component: '<div></div>'
+  },
+  {
     path: "/about",
     name: "about",
     // route level code-splitting

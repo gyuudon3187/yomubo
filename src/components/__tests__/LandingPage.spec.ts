@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll, beforeAll, beforeEach, vi, afterEach } from "vitest";
 
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import RegistrationModal from "../LandingPage/RegistrationModal.vue";
 import LandingPage from "@/views/LandingPage/LandingPageView.vue";
 import router from "@/router";
@@ -215,9 +215,10 @@ describe("Registration modal", () => {
         })
 
         submit.trigger("click");
-        
-        await new Promise(r => setTimeout(r, 0));
-        expect(validation.text()).toBe("E-mail already registered.");
+        await new Promise(r => setTimeout(r, 500)).then(() => {
+          expect(validation.text()).toBe("E-mail already registered.")
+        });
+        ;
       })
     })
 

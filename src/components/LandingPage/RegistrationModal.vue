@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Modal from "../../components/Misc/Modal.vue";
 import { useI18n } from "vue-i18n";
-import { useAuthStore } from "@/stores/auth"
+import { useAuthStore } from "@/stores/auth";
 import { useModalStore } from "@/stores/modal";
 import untypedLanguages from '@/i18n/languages.json';
 import {

@@ -4,31 +4,38 @@ import RegistrationModal from "@/components/LandingPage/RegistrationModal.vue";
 import Background from "../../components/LandingPage/Background/Background.vue";
 import Header from "../../components/LandingPage/Header.vue";
 import { useModalStore } from "@/stores/modal";
-import { useI18n } from "vue-i18n";
 const modal = useModalStore();
 
 </script>
 
 <template>
-  <RegistrationModal v-show="modal.isVisible"/>
-  <div id="landingPage">
-    <Background />
+  <div class="test">
+    <RegistrationModal v-show="modal.isVisible"/>
+    <div id="landingPage">
+      <Background />
 
-    <div class="main">
-      <Header />
-      <RouterView class="router-view" v-slot="{ Component }">
-        <Transition name="route" mode="out-in">
-          <Component :is="Component"></Component>
-        </Transition>
-      </RouterView>
+      <div class="main">
+        <Header :height="119" :width="347" />
+        <RouterView class="router-view" v-slot="{ Component }">
+          <Transition name="route" mode="out-in">
+            <Component :is="Component"></Component>
+          </Transition>
+        </RouterView>
       </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
+.test {
+  /* margin: auto; */
+}
+
 #landingPage {
   padding: 2rem 3rem;
-  width: 1263px;
+  width: 1280px;
+  height: 1600px;
+  background-color: var(--color-header);
 }
 
 .main {

@@ -4,6 +4,18 @@ import type { InputComponent, InputComponentGroup, Validation, ValidationGroup }
 import { ref, type Ref } from "vue";
 const { t } = i18n.global
 
+export function getPlaceholderValidation(): ValidationGroup {
+    const placeholderValidation: ValidationGroup = {
+        validations: [],
+        displayMessage: ref(""),
+        error: ref(false),
+        dirty: ref(false)
+    }
+
+    return Object.assign(placeholderValidation);
+}
+
+
 export enum ValidationId {
     Alphabetical = "alphabetical",
     FirstLetterCapitalized = "firstLetterCapitalized",
