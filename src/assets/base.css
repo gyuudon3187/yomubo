@@ -11,6 +11,7 @@
   --vt-c-gray-black: #313131;
   --vt-c-red: #FC4F59;
   --vt-c-light-green: #67EEB0;
+  --vt-c-dark-green: #416F53;
 
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
@@ -43,6 +44,7 @@
   /* validation */
   --color-negative: var(--vt-c-red);
   --color-positive: var(--vt-c-light-green);
+  --color-on-positive: var(--vt-c-dark-green);
   
   /* input */
   --color-input: var(--vt-c-light-gray);
@@ -53,6 +55,10 @@
   --color-tertiary: var(--vt-c-light-brown);
   --color-quaternary: var(--vt-c-light-gray);
   --color-quaternary-border: var(--vt-c-dark-gray);
+
+  /* containers */
+  --color-on-primary-container: var(--vt-c-dark-brown);
+  --color-active-container: var(--vt-c-light-brown);
 
   /* text */
   --color-on-primary: var(--vt-c-beige);

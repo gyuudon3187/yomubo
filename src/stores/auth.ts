@@ -100,5 +100,5 @@ export const useAuthStore = defineStore("authStore", () => {
     validation!.error.value = true;
   }
 
-  return { createUser, isAuthenticated, listenToAuthChanges, logOut, logIn }
+  return { createUser, listenToAuthChanges, logOut, logIn, isAuthenticated, uid }
 })

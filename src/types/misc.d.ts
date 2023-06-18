@@ -26,9 +26,43 @@ export interface MultiselectDropdownInterface extends HasId, HasLabel, HasValida
     placeholderPath: string
 }
 
+export interface AccordionItem extends HasLabel {
+    selected: Ref<Boolean>,
+    subItems: AccordionSubItem[]
+}
+
+interface AccordionSubItem extends HasLabel {
+    icon: string,
+    value: string
+}
+
+export interface Club extends HasLabel {
+    members: Members
+    language: Language,
+    meeting: MeetingType,
+    pace: Pace,
+    gender: Gender,
+    genre: Genre
+}
+
+type Language = string
+
+interface Members {
+    current: number,
+    max: number
+}
+
+type Meeting = "Online" | "Physical"
+
+type Pace = number
+
+type Gender = "Male" | "Female" | "All"
+
+type Genre = string
+
 export interface Option extends HasLabel {
     selected: Ref<boolean>,
-    isVisible: Ref<boolean>
+    isVisible?: Ref<boolean>
 }
 
 export interface ValidationGroup {
@@ -67,3 +101,18 @@ export interface ButtonInterface {
 }
 
 type ButtonTypes = "primary" | "secondary" | "tertiary" | "quaternary" | "negative"
+
+export interface Book {
+    id: string,
+    image: string,
+    title: string,
+    synopsis: string,
+    authors: string,
+    pages: number,
+}
+
+export interface BookCandidate extends Book {
+    selected: boolean,
+    addedBy: string,
+    reason: string
+}

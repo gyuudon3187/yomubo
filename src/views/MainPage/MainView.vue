@@ -7,7 +7,7 @@ import ClubManagement from '@/components/Main/Clubs/ClubManagement/ClubManagemen
 
 <template>
     <div id="mainPage">
-        <Header class="mainHeader"  :height="60" :width="174" />
+        <Header :height="60" :width="174" />
         <div class="test">
             <ClubManagement />
             <ClubContent />
@@ -22,11 +22,12 @@ import ClubManagement from '@/components/Main/Clubs/ClubManagement/ClubManagemen
     height: 100%;
 }
 
-.mainHeader {
+/* .mainHeader {
     padding: 0rem 3rem;
     background-color: var(--color-header);
     position: sticky;
-}
+    top: 0;
+} */
 
 .test {
     padding: 2.5rem 3rem;
@@ -36,28 +37,6 @@ import ClubManagement from '@/components/Main/Clubs/ClubManagement/ClubManagemen
     justify-content: space-between;
 }
 
-.myClubsTitle {
-    font-size: x-large;
-    bottom: -8px;
-}
-
-.myClubsContent {
-    width: 180px;
-    height: 300px;
-    /* background-color: aqua; */
-}
-
-.clubTitle {
-    font-size: xx-large;
-}
-
-.clubContent {
-
-    background-color: var(--color-background);
-    border-radius: 60px;
-    width: 870px;
-    height: 500px;
-}
 
 .pad {
     width: 180px;
@@ -80,4 +59,15 @@ import ClubManagement from '@/components/Main/Clubs/ClubManagement/ClubManagemen
     background-color: var(--color-border);
 }
 
+</style>
+
+<style>
+::-webkit-scrollbar {
+  width: 0.4vw;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(153, 88, 88);
+  border-radius: 8px;
+}
 </style>

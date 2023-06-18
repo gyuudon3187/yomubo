@@ -8,7 +8,7 @@ import NextMeeting from './NextMeeting.vue'
 <template>
     <div>
         <div class="header">
-            <h style="padding-right: 1vw;">Club Name</h>
+            <p style="padding-right: 1vw;">Club Name</p>
             <nav>
                 <RouterLink to="/">
                     <Icon icon="fa-solid fa-house" size="2xs"/>
@@ -54,7 +54,7 @@ nav > * {
 
 .clubContent {
     background-color: var(--color-background);
-    border-radius: 60px;
+    border-radius: 4.5vw;
     width: 54.5vw;
     height: 40vw;
     padding: 2vw 2vw;

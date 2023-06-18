@@ -36,7 +36,7 @@ defineProps<{
   </header>
   <div :class="{ invisiblePad: authStore.isAuthenticated}">
 
-</div>
+  </div>
 </template>
 
 <style scoped>

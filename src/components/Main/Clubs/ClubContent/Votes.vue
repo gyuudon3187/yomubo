@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <h style="font-size: 1.8vw; color: var(--color-on-background)">Votes</h>
+        <p style="font-size: 1.8vw; color: var(--color-on-background)">Votes</p>
         <div class="votesContent">
             <div class="header">
                 <p>Member</p>

@@ -3,12 +3,14 @@ import type {
     ButtonInterface,
     InputFieldInterface,
     MultiselectDropdownInterface,
-    RadioButtonInterface, 
+    RadioButtonInterface,
+    Club, 
     Option,
     Validation,
     InputComponent,
     InputComponentGroup,
-    ValidationGroup} from "@/types/misc";
+    ValidationGroup,
+    AccordionItem} from "@/types/misc";
 import i18n from "@/i18n";
 import { ref, type Ref } from "vue";
 import { camelize } from "@/util/misc";
@@ -100,6 +102,45 @@ export function initializeMultiselectDropdown(id: string,
     input: initialInput,
     placeholderPath: path
   }
+}
+
+export function initializeClubAccordionItems(clubs: Club[]): AccordionItem[] {
+  return clubs.map(club => ({
+    label: club.label,
+    selected: ref(false),
+    subItems: [
+      {
+        label: "Members", 
+        icon: "fa-solid fa-user-group", 
+        value: club.members.current + "/" + club.members.max
+      },
+      {
+        label: "Language",
+        icon: "fa-solid fa-language",
+        value: club.language
+      },
+      {
+        label: "Meetings",
+        icon: "fa-solid fa-users",
+        value: club.meeting
+      },
+      {
+        label: "Pace",
+        icon: "fa-solid fa-gauge-high",
+        value: club.pace + " pages/month"
+      },
+      {
+        label: "Gender",
+        icon: "fa-solid fa-venus-mars",
+        value: club.gender
+      },
+      {
+        label: "Genre",
+        icon: "fa-solid fa-masks-theater",
+        value: club.genre
+      }
+    ]
+  }))
 }
 
 export function initializeInputComponentGroup(path: string, components: InputComponent[]): InputComponentGroup {

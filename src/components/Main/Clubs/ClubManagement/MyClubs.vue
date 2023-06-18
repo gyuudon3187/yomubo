@@ -1,27 +1,89 @@
 <script setup lang="ts">
+import Accordion from '@/components/Misc/Accordion.vue';
+import type { AccordionItem } from '@/types/misc';
+import { initializeClubAccordionItems } from '@/components/util'
+import { ref } from 'vue';
 
+const itemOne: AccordionItem = {
+    label: "test1",
+    selected: ref(false),
+    subItems: [
+        {
+            icon: "fa-solid fa-house",
+            label: "members",
+            value: "5/8"
+        }
+    ]
+}
+
+const itemTwo: AccordionItem = {
+    label: "test2",
+    selected: ref(false),
+    subItems: [
+        {
+            icon: "fa-solid fa-message",
+            label: "chat",
+            value: "huh"
+        }
+    ]
+}
+
+const test = initializeClubAccordionItems([
+    {
+        label: "Test",
+        members: {
+            current: 5,
+            max: 8
+        },
+        language: "Japanese",
+        meeting: "Physical",
+        pace: 230,
+        gender: "All",
+        genre: "Mystery"
+    },
+    {
+        label: "Test2",
+        members: {
+            current: 5,
+            max: 8
+        },
+        language: "Japanese",
+        meeting: "Physical",
+        pace: 230,
+        gender: "All",
+        genre: "Mystery"
+    }
+])
 </script>
 
 <template>
     <div>
         <div class="myClubsTitle">
-            <h style="color: var(--color-on-background)">My Clubs</h>
+            <p style="color: var(--color-on-background)">My Clubs</p>
             <div class="line"></div>
         </div>
-        <div class="myClubs"></div>
+        <Accordion class="myClubs" :items="test"/>
+        <!-- <div class="myClubs">
+            <p>test</p>
+            <p>test2</p>
+        </div> -->
     </div>
 </template>
 
 <style scoped>
 .myClubsTitle {
-    font-size: x-large;
-    bottom: -8px;
+    font-size: 2vw;
+    bottom: -0.6vw;
 }
 
 .myClubs {
-    width: 180px;
-    height: 300px;
-    /* background-color: aqua; */
+    margin-top: 1vw;
+}
+
+.myClubs p {
+    font-weight: bold;
+    cursor: pointer;
+    width: fit-content;
 }
 
 .line {

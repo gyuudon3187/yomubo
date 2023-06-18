@@ -1,5 +1,20 @@
 <script setup lang="ts">
+import type { BookCandidate } from '@/types/misc';
+import type { Ref } from 'vue';
+import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useReadingListStore } from '@/stores/readingList';
+const { readingList } = storeToRefs(useReadingListStore());
 
+const title = "Title";
+const authors = "Author";
+const synopsis = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat ";
+const image = "src/assets/kagami_no_kojou.png";
+const selectedBook: Ref<BookCandidate> = ref({ id: "", title, authors, synopsis, image, pages: 415, reason: "", addedBy: "", selected: false });
+
+watch(readingList, () => {
+    selectedBook.value = readingList.value.find(book => book.selected) ?? { id: "", title, authors, synopsis, image, pages: 415, reason: "", addedBy: "", selected: false };
+})
 </script>
 
 <template>
@@ -8,12 +23,12 @@
         <div class="subcontainer">
             
             <div class="synopsisContainer">
-                <h style="color: black; font-size: 1.4vw; font-weight: 700;">Title</h>
-                <p style="color: var(--color-alt-on-background); font-size: 1.1vw;">Author</p>
-                <p class="synopsis">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat </p>
+                <p style="color: black; font-size: 1.4vw; font-weight: 700;">{{ selectedBook.title }}</p>
+                <p style="color: var(--color-alt-on-background); font-size: 1.1vw;">{{ selectedBook.authors }}</p>
+                <p class="synopsis">{{ selectedBook.synopsis }}</p>
             </div>
         </div>
-        <img class="book" src="@/assets/kagami_no_kojou.png"/>
+        <img class="book" :src="selectedBook.image"/>
     </div>
 </template>
 
@@ -49,19 +64,10 @@
 }
 
 .synopsis {
-    overflow-y: scroll; 
+    overflow-y: auto; 
     height: 7vw;
     font-size:1vw;
     color: var(--color-on-background);
-}
-
-.synopsis::-webkit-scrollbar {
-  width: 0.4vw;
-}
-
-.synopsis::-webkit-scrollbar-thumb {
-  background-color: rgb(153, 88, 88);
-  border-radius: 8px;
 }
 
 </style>

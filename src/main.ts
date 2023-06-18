@@ -18,20 +18,42 @@ import {
     faCheckToSlot,
     faMessage,
     faGear,
-    faCircleCheck
+    faCircleCheck,
+    faUserGroup,
+    faLanguage,
+    faUsers,
+    faGaugeHigh,
+    faVenusMars,
+    faMasksTheater,
+    faCircleXmark,
+    faPen,
+    faEye
      } from '@fortawesome/free-solid-svg-icons'
 
 import "./assets/main.css";
 
-library.add(faChevronDown)
-library.add(faCheck)
-library.add(faUserCircle)
-library.add(faHouse)
-library.add(faBook)
-library.add(faCheckToSlot)
-library.add(faMessage)
-library.add(faGear)
-library.add(faCircleCheck)
+const icons = [
+    faChevronDown,
+    faCheck,
+    faUserCircle,
+    faHouse,
+    faBook,
+    faCheckToSlot,
+    faMessage,
+    faGear,
+    faCircleCheck,
+    faUserGroup,
+    faLanguage,
+    faUsers,
+    faGaugeHigh,
+    faVenusMars,
+    faMasksTheater,
+    faCircleXmark,
+    faPen,
+    faEye
+]
+
+icons.forEach(icon => library.add(icon));
 
 const app = createApp(Root);
 
