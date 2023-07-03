@@ -23,7 +23,7 @@ html::-webkit-scrollbar-thumb{
 }
 
 #app {
-  position: relative;
+  /* position: relative; */
   display: flex;
   width: 100%;
   font-family: 'Heebo', sans-serif;

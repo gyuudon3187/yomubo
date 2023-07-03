@@ -6,9 +6,11 @@ import { getPlaceholderValidation } from '@/util/validation'
 import { useI18n } from 'vue-i18n';
 import { useModalStore } from '@/stores/modal';
 import { useAuthStore } from '@/stores/auth';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 const { t } = useI18n();
 const modal = useModalStore();
+const { registrationModalIsVisible } = storeToRefs(modal);
 const { logIn } = useAuthStore();
 
 const {
@@ -46,7 +48,7 @@ function initializeVariables() {
         welcomeMsg: t(basePath + "welcomeMsg"),
         email: emailInputField,
         password: passwordInputField,
-        signup: initializeButton(basePath + "signup", "primary", modal.open),
+        signup: initializeButton(basePath + "signup", "primary", () => modal.open(registrationModalIsVisible)),
         login: initializeButton(basePath + "login", "secondary", () => logIn({email: emailInput.value, password: passwordInput.value}, authComponents)),
         logInOnEnter
     }

@@ -10,26 +10,55 @@ import Button from '@/components/Misc/Button.vue';
 import Input from '@/components/Misc/InputField.vue';
 import RadioButton from '@/components/Misc/RadioButton.vue';
 import MultiselectDropdown from './MultiselectDropdown.vue';
+import type { Ref } from 'vue';
 import Loading from './Loading.vue';
 import { storeToRefs } from 'pinia';
 import { useModalStore } from '@/stores/modal';
-const modal = useModalStore();
-const { registrationModalIsVisible } = storeToRefs(useModalStore());
+const modalStore = useModalStore();
+const { 
+    registrationModalIsVisible, 
+    reasonModalIsVisible,
+    deleteBookModalIsVisible,
+    voteResultsModalIsVisible  } = storeToRefs(useModalStore());
 
-defineProps<{
-  header: string,
-  componentGroups?: InputComponentGroup[]
-  buttons: ButtonInterface[]
-}>();
+const props = withDefaults(defineProps<{
+    name: "registration" | "reason" | "delete" | "voteResults",
+    backgroundColor?: string,
+    color?: string,
+    noFooter?: boolean,
+    noCloseButton?: boolean,
+    noCloseOnOutsideClick?: boolean
+}>(), {
+    noFooter: false,
+    noCloseButton: false,
+    noCloseOnOutsideClick: false
+});
+
+let modal: Ref<boolean>;
+
+switch(props.name) {
+    case "registration":
+        modal = registrationModalIsVisible;
+        break;
+    case "reason":
+        modal = reasonModalIsVisible;
+        break;
+    case "delete":
+        modal = deleteBookModalIsVisible;
+        break;
+    case "voteResults":
+        modal = voteResultsModalIsVisible;
+        break;
+}
 
 function closeIfOutsideClick({target}: MouseEvent) {
-  if(target == document.getElementById('modal')) {
-    modal.close(registrationModalIsVisible);
+  if(target == document.getElementById('modal') && !props.noCloseOnOutsideClick) {
+    modalStore.close(modal);
   }
 }
 
 function close() {
-  modal.close(registrationModalIsVisible);
+  modalStore.close(modal);
 }
 
 </script>
@@ -41,28 +70,18 @@ function close() {
         <div class="modal-content">
           <Loading />
           
-          <header class="container">
-            <h2>{{ header }}</h2>
-            <span class="close" @click="close">&times;</span>
+          <header class="container" 
+          :style="{ backgroundColor: backgroundColor ?? 'var(--color-header)', color: color ?? ''}">
+            <slot name="header"></slot>
+            <span v-if="!noCloseButton" class="close" @click="close">&times;</span>
           </header>
 
           <div class="container">
-            <div v-if="componentGroups">
-              <div v-for="componentGroup in componentGroups" class="component-group">
-                <h3>{{ componentGroup.label }}</h3>
-                <div v-for="component in componentGroup.components" class="components">
-
-                  <Input v-if="isInputField(component)" :inputProps="component" />
-                  <RadioButton v-else-if="isRadioButton(component)" :radioButtonProps="component" />
-                  <MultiselectDropdown v-else-if="isMultiselectDropdown(component)" :multiselectProps="component" class="select"/>
-
-                </div>
-              </div>
-            </div>
+            <slot></slot>
           </div>
 
-          <footer class="container">
-            <Button v-for="button in buttons" :buttonProps="button" />
+          <footer v-if="!noFooter" class="container" :style="{ backgroundColor: backgroundColor ?? 'var(--color-header)'}">
+            <slot name="footer"></slot>
           </footer>
 
         </div>
@@ -75,7 +94,7 @@ function close() {
 <style scoped>
 #modal {
   position: fixed;
-  z-index: 2;
+  z-index: 4;
   left: 0;
   top: 0;
   width: 100%;
@@ -96,21 +115,8 @@ function close() {
   width: 36%;
 }
 
-.component-group {
-  margin-bottom: 0.5rem;
-}
-
-.components {
-  display: inline-block;
-}
-
-.components > div {
-  margin: 10px;
-}
-
 header {
-  background-color: var(--color-header);
-  border-radius: 20px 20px 0 0;
+  border-radius: 18.9px 18.9px 0 0;
   height: 2.5rem;
   position: relative;
   text-align: center;
@@ -118,17 +124,20 @@ header {
 }
 
 .container {
-  padding: 0.01em 16px;
+  padding: 1em 4vw;
   width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.container:not(footer) {
+    justify-content: center;
 }
 
 footer {
-  align-items: center;
-  background-color: var(--color-header);
-  border-radius: 0 0 20px 20px;
-  display: flex;
-  height: 3.5rem;
-  justify-content: space-around;
+    justify-content: space-around;
+    border-radius: 0 0 18.9px 18.9px;
+    height: 3.5rem;
 }
 
 .close {

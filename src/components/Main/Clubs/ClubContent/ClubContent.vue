@@ -3,12 +3,19 @@ import Book from './Book/Book.vue';
 import Votes from './Votes.vue';
 import ReadingList from './ReadingList/ReadingList.vue';
 import NextMeeting from './NextMeeting.vue'
+import { Stage } from '@/components/util';
+import { computed } from 'vue';
+import { useClubStore } from '@/stores/club';
+import { storeToRefs } from 'pinia';
+const clubStore = useClubStore();
+const { selectedClub, isClubOwner } = storeToRefs(clubStore);
+
 </script>
 
 <template>
     <div>
         <div class="header">
-            <p style="padding-right: 1vw;">Club Name</p>
+            <p style="padding-right: 1vw;">{{ selectedClub.label }}</p>
             <nav>
                 <RouterLink to="/">
                     <Icon icon="fa-solid fa-house" size="2xs"/>
@@ -17,19 +24,19 @@ import NextMeeting from './NextMeeting.vue'
                     <Icon icon="fa-solid fa-book" size="2xs"/>
                 </RouterLink>
                 <RouterLink to="/">
-                    <Icon icon="fa-solid fa-check-to-slot" size="2xs"/>
-                </RouterLink>
-                <RouterLink to="/">
                     <Icon icon="fa-solid fa-message" size="2xs"/>
                 </RouterLink>
                 <RouterLink to="/">
-                    <Icon icon="fa-solid fa-gear" size="2xs"/>
+                    <Icon v-if="isClubOwner" icon="fa-solid fa-gear" size="2xs"/>
                 </RouterLink>
             </nav>
             
             <div class="line"></div>
         </div>
-        <div class="clubContent">
+        <div v-if="clubStore.isInStage(Stage.Start)">
+
+        </div>
+        <div v-else-if="clubStore.isInStage(Stage.Voting)" class="clubContent readingStage">
             <Book />
             <Votes />
             <ReadingList />
@@ -45,6 +52,7 @@ import NextMeeting from './NextMeeting.vue'
     color: var(--color-on-background);
     display: flex;
     flex-direction: row;
+    position: relative;
 }
 
 nav > * {
@@ -58,6 +66,9 @@ nav > * {
     width: 54.5vw;
     height: 40vw;
     padding: 2vw 2vw;
+}
+
+.readingStage {
     display: grid;
     grid-template-columns: 35vw 13vw;
     grid-auto-rows: 16.4vw;

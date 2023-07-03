@@ -6,6 +6,7 @@
   --vt-c-light-gray: #F4F2EE;
   --vt-c-dark-gray: #B8B8B8;
   --vt-c-beige: #FDEACD;
+  --vt-c-light-pink: #FFE3E3;
   --vt-c-light-orange: #EDA14A;
   --vt-c-dark-orange: #EE864B;
   --vt-c-gray-black: #313131;
@@ -45,6 +46,7 @@
   --color-negative: var(--vt-c-red);
   --color-positive: var(--vt-c-light-green);
   --color-on-positive: var(--vt-c-dark-green);
+  --color-on-negative: var(--vt-c-light-pink);
   
   /* input */
   --color-input: var(--vt-c-light-gray);
@@ -57,6 +59,7 @@
   --color-quaternary-border: var(--vt-c-dark-gray);
 
   /* containers */
+  --color-primary-container: var(--vt-c-light-orange);
   --color-on-primary-container: var(--vt-c-dark-brown);
   --color-active-container: var(--vt-c-light-brown);
 
@@ -98,9 +101,13 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
-  position: relative;
+  /* position: relative; */
   font-weight: normal;
 }
+
+/* .dp__main>*::after {
+  position: static;
+} */
 
 body {
   min-height: 100vh;

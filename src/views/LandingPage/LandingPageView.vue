@@ -10,7 +10,7 @@ const modal = useModalStore();
 
 <template>
   <div class="test">
-    <RegistrationModal v-show="modal.isVisible"/>
+    <RegistrationModal v-show="modal.registrationModalIsVisible"/>
     <div id="landingPage">
       <Background />
 
@@ -27,10 +27,6 @@ const modal = useModalStore();
 </template>
 
 <style scoped>
-.test {
-  /* margin: auto; */
-}
-
 #landingPage {
   padding: 2rem 3rem;
   width: 1280px;
@@ -42,6 +38,7 @@ const modal = useModalStore();
   z-index: 1;
   display: grid;
   grid-template-rows: 0.6fr 0.6fr;
+  position: relative;
 }
 
 .router-view {

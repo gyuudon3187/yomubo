@@ -83,5 +83,65 @@
                 "description": "The club owner sets a voting deadline. <br>When the deadline is due, the votes are calculated. <br>The book with most votes will be read by the club."
             }
         }
+    },
+    "mainPage": {
+        "modals": {
+            "reason": {
+                "header": "Enter your reason for picking this book",
+                "maxChars": {
+                    "letters": "letters",
+                    "maxCharsExceeded": "reason is too long"
+                },
+                "buttons": {
+                    "back": "Go back",
+                    "submit": "Submit"
+                }
+            },
+            "delete": {
+                "header": "Confirm Deletion",
+                "main": "You are about to delete {bookName} from the 'Reading List'. Any added 'Reasons' will be lost. <br><br> Do you want to proceed?",
+                "buttons": {
+                    "back": "Go back",
+                    "confirm": "Confirm"
+                }
+            },
+            "voteResults": {
+                "startReading": "Start Reading"
+            }
+        },
+        "clubContent": {
+            "votesOrProgress": {
+                "timeUnits": {
+                    "days": "days",
+                    "hours": "hours",
+                    "minutes": "minutes",
+                    "seconds": "seconds"
+                },
+                "untilVotesAreCounted": "until votes are counted"
+            },
+            "readingList": {
+                "options": {
+                    "vote": "Vote",
+                    "unvote": "Unvote"
+                }
+            },
+            "nextMeeting": {
+                "type": {
+                    "label": "Type",
+                    "online": "Online",
+                    "physical": "Physical"
+                },
+                "meetingDate": {
+                    "label": "Time & Date"
+                },
+                "votingDeadline": {
+                    "label": "Voting Deadline"
+                },
+                "location": {
+                    "label": "Location",
+                    "meetingLocation": "Set meeting location"
+                }
+            }
+        }
     }
 }

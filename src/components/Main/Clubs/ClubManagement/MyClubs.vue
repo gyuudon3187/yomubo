@@ -1,59 +1,24 @@
 <script setup lang="ts">
 import Accordion from '@/components/Misc/Accordion.vue';
-import type { AccordionItem } from '@/types/misc';
+import type { AccordionItem, Club } from '@/types/misc';
+import { useClubStore } from '@/stores/club';
 import { initializeClubAccordionItems } from '@/components/util'
 import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
+const { clubs, selectedClub } = storeToRefs(useClubStore());
 
-const itemOne: AccordionItem = {
-    label: "test1",
-    selected: ref(false),
-    subItems: [
-        {
-            icon: "fa-solid fa-house",
-            label: "members",
-            value: "5/8"
-        }
-    ]
+const accordionProps = initializeClubAccordionItems(clubs.value)
+
+function selectClub(items: AccordionItem[]) {
+    const newSelectedClub = items.find(item => item.selected)?.data as Club;
+    const readingList = newSelectedClub.readingList;
+
+    selectedClub.value = Object.assign(newSelectedClub, {
+        readingList: readingList.map((book, index) => Object.assign(book, {
+            selected: index === 0
+        }))
+    });
 }
-
-const itemTwo: AccordionItem = {
-    label: "test2",
-    selected: ref(false),
-    subItems: [
-        {
-            icon: "fa-solid fa-message",
-            label: "chat",
-            value: "huh"
-        }
-    ]
-}
-
-const test = initializeClubAccordionItems([
-    {
-        label: "Test",
-        members: {
-            current: 5,
-            max: 8
-        },
-        language: "Japanese",
-        meeting: "Physical",
-        pace: 230,
-        gender: "All",
-        genre: "Mystery"
-    },
-    {
-        label: "Test2",
-        members: {
-            current: 5,
-            max: 8
-        },
-        language: "Japanese",
-        meeting: "Physical",
-        pace: 230,
-        gender: "All",
-        genre: "Mystery"
-    }
-])
 </script>
 
 <template>
@@ -62,11 +27,7 @@ const test = initializeClubAccordionItems([
             <p style="color: var(--color-on-background)">My Clubs</p>
             <div class="line"></div>
         </div>
-        <Accordion class="myClubs" :items="test"/>
-        <!-- <div class="myClubs">
-            <p>test</p>
-            <p>test2</p>
-        </div> -->
+        <Accordion class="myClubs" :accordion-props="accordionProps" :on-selected="selectClub"/>
     </div>
 </template>
 
@@ -74,6 +35,7 @@ const test = initializeClubAccordionItems([
 .myClubsTitle {
     font-size: 2vw;
     bottom: -0.6vw;
+    position: relative;
 }
 
 .myClubs {

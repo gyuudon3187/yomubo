@@ -1,10 +1,17 @@
-import type { Ref } from "vue";
+import type { ComputedRef, Ref } from "vue";
+import { Stage } from "@/components/util";
 
-export interface InputComponentGroup extends HasLabel {
+export interface InputComponentGroup {
+    label?: string,
     components: InputComponent[]
 }
 
-export type InputComponent = InputFieldInterface | RadioButtonInterface | MultiselectDropdownInterface
+export type InputComponent =    InputFieldInterface | 
+                                RadioButtonInterface | 
+                                MultiselectDropdownInterface | 
+                                DatePickerInterface |
+                                LocationPickerInterface |
+                                TextAreaInterface
 
 export interface InputFieldInterface extends HasId, HasLabel, HasValidation {
     __typename: "InputFieldInterface",
@@ -26,9 +33,30 @@ export interface MultiselectDropdownInterface extends HasId, HasLabel, HasValida
     placeholderPath: string
 }
 
+export interface DatePickerInterface extends HasId, HasLabel {
+    __typename: "DatePickerInterface",
+    data: Ref<Date>
+}
+
+export interface LocationPickerInterface extends HasId, HasLabel {
+    __typename: "LocationPickerInterface",
+    data: Ref<string>
+}
+
 export interface AccordionItem extends HasLabel {
-    selected: Ref<Boolean>,
+    data?: any,
+    selected: boolean,
     subItems: AccordionSubItem[]
+}
+
+export interface TextAreaInterface extends HasId {
+    __typename: "TextAreaInterface",
+    rows: number,
+    columns: number,
+    input: Ref<string>,
+    disabled?: boolean,
+    maxChars?: number,
+    label?: string
 }
 
 interface AccordionSubItem extends HasLabel {
@@ -37,28 +65,43 @@ interface AccordionSubItem extends HasLabel {
 }
 
 export interface Club extends HasLabel {
-    members: Members
+    clubOwner: string,
+    readingList: BookCandidate[],
+    members: Member[],
+    meetings: Meeting[],
+    maxMemberCount: number,
     language: Language,
     meeting: MeetingType,
-    pace: Pace,
+    pace: number,
     gender: Gender,
-    genre: Genre
+    genre: string
+}
+
+export interface Meeting {
+    type: string,
+    date: string,
+    votingDeadline: string,
+    location: string,
+    currentlyReading: string,
+    votes: Votes
+    stage: Stage.Start | Stage.Voting | Stage.Reading | Stage.Discussing
+}
+
+interface Votes {
+    [uid: string]: string
 }
 
 type Language = string
 
-interface Members {
-    current: number,
-    max: number
+interface Member {
+    id: string,
+    name: string,
+    pfp: string
 }
 
-type Meeting = "Online" | "Physical"
-
-type Pace = number
+type MeetingType = "Online" | "Physical"
 
 type Gender = "Male" | "Female" | "All"
-
-type Genre = string
 
 export interface Option extends HasLabel {
     selected: Ref<boolean>,
@@ -108,11 +151,12 @@ export interface Book {
     title: string,
     synopsis: string,
     authors: string,
-    pages: number,
+    pages: number
 }
 
 export interface BookCandidate extends Book {
     selected: boolean,
+    voted: boolean,
     addedBy: string,
-    reason: string
+    reason: string,
 }

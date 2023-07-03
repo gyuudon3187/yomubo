@@ -14,8 +14,4 @@ const isAuthenticated = await listenToAuthChanges();
 </template>
 
 <style scoped>
-.landing-page {
-  width: 100%; /* Remove to get back centered landing page */
-  background-color: var(--color-header);
-}
 </style>

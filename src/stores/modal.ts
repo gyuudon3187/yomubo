@@ -3,15 +3,25 @@ import { ref } from "vue";
 import type { Ref } from "vue";
 
 export const useModalStore = defineStore("modalStore", () => {
-    const isVisible: Ref<boolean> = ref(false);
+    const registrationModalIsVisible = ref(false);
+    const reasonModalIsVisible = ref(false);
+    const deleteBookModalIsVisible = ref(false);
+    const voteResultsModalIsVisible = ref(false);
 
-    function open() {
-        if(!isVisible.value) isVisible.value = true;
+    function open(modal: Ref<boolean>) {
+        if(!modal.value) modal.value = true;
     }
 
-    function close() {
-        if(isVisible.value) isVisible.value = false;
+    function close(modal: Ref<boolean>) {
+        if(modal.value) modal.value = false;
     }
 
-    return { isVisible, open, close }
+    return {
+        registrationModalIsVisible,
+        reasonModalIsVisible,
+        deleteBookModalIsVisible,
+        voteResultsModalIsVisible,
+        open,
+        close
+    }
 })

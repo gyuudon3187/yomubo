@@ -1,29 +1,65 @@
 <script setup lang="ts">
-import type { AccordionItem } from '@/types/misc'
-const { items } = defineProps<{
-    items: AccordionItem[]
+import type { AccordionItem, Club } from '@/types/misc';
+import { changeSelectionOnScroll } from '@/components/util';
+import { watch, ref, onMounted } from 'vue';
+const { accordionProps, onSelected } = defineProps<{
+    accordionProps: AccordionItem[],
+    onSelected?: Function
 }>()
 
+accordionProps[0].selected = true;
+const items = ref(accordionProps);
+const selectedIndex = ref(0);
+
+if(onSelected && items.value.length !== 0) onMounted(() => onSelected(items.value));
+if(onSelected) watch(items, () => onSelected(items.value));
+
 function openAccordionItem(item: AccordionItem) {
-    if(!item.selected.value) {
-        items.forEach(otherItem => {
-            if(otherItem.selected.value) {
-                otherItem.selected.value = false;
-            }
-        })
-        item.selected.value = true;
-    }
+    items.value = items.value.map((otherItem, index) => {
+        if(hasSameLabel(otherItem)) selectedIndex.value = index;
+        return Object.assign(otherItem, { selected: hasSameLabel(otherItem) })
+
+        function hasSameLabel(otherItem: AccordionItem) {
+            return otherItem.label === item.label;
+        }
+    })
 }
+
+// function changeClubOnScroll(e: WheelEvent) {
+//     let updatedIndex = selectedIndex.value;
+
+//     const determineIndexToBeUpdatedBasedOnScrollDirection = (index: number) => index + (e.deltaY < 0 ? -1 : 1);
+//     const indexToBeUpdated = determineIndexToBeUpdatedBasedOnScrollDirection(selectedIndex.value);
+
+//     if(indexToBeUpdated >= 0 && indexToBeUpdated < items.value.length) {
+//         items.value = items.value.map((item, index) => {
+//             if(index === indexToBeUpdated) updatedIndex = index;
+//             return Object.assign(item, { 
+//                 selected: index === indexToBeUpdated ? true :
+//                           index === selectedIndex.value ? false :
+//                           item.selected
+//             })
+//         })
+//     }
+
+//     selectedIndex.value = updatedIndex;
+//     e.preventDefault()
+// }
+
+function changeClubSelectionOnScroll(e: WheelEvent) {
+    changeSelectionOnScroll<AccordionItem>(e, selectedIndex, items);
+}
+
 </script>
 
 <template>
-    <div class="container">
+    <div @wheel="changeClubSelectionOnScroll" class="container">
         <div v-if="items.length !== 0" v-for="item in items">
-            <p class="item" :class="{selectedItem: item.selected.value, unselectedItem: !item.selected.value}" @click="() => openAccordionItem(item)">
+            <p class="item" :class="{selectedItem: item.selected, unselectedItem: !item.selected}" @click="() => openAccordionItem(item)">
                 {{ item.label }}
             </p>
             <Transition name="expand-vertically">
-                <div class="pane" v-show="item.selected.value">
+                <div class="pane" v-show="item.selected">
                     <div class="subItem" v-for="subItem in item.subItems">
                         <div class="subItemLabel">
                             <Icon :icon="subItem.icon" />
@@ -74,14 +110,11 @@ function openAccordionItem(item: AccordionItem) {
 
 .subItem {
     padding: 0.5vw 1vw;
-    /* display: flex; */
-    justify-content: space-between;
     font-size: 0.93vw;
 }
 
 .subItemLabel {
     display: flex;
-    flex-direction: row;
     color: var(--color-alt-on-background);
 }
 

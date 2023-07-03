@@ -16,6 +16,7 @@
 .findClubsTitle {
     font-size: 2vw;
     bottom: -0.6vw;
+    position: relative;
 }
 
 .findClubs {

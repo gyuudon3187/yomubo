@@ -18,7 +18,7 @@ function dirtyAndError(): boolean | undefined {
 </script>
 
 <template>
-  <div>
+  <div style="position: relative;">
 
     <input 
       @blur="touch(inputProps.validation); validate($event, inputProps.validation);"

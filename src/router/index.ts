@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
 import LandingPageView from "../views/LandingPage/RouterViews/HomeView.vue";
 
 const routes = [
@@ -25,11 +26,20 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import("../views/LandingPage/RouterViews/AboutView.vue"),
   },
-];
+] as Array<RouteRecordRaw>;
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.VITE_BASE_URL),
   routes,
+  scrollBehavior(to) {
+    if(to.hash) {
+      console.log(to.hash)
+      return {
+        top: 650,
+        behavior: "smooth"
+      }
+    }
+  }
 });
 
 export { routes }

@@ -12,30 +12,28 @@ defineProps<{
 </script>
 
 <template>
-  <header >
-    <div style="display: flex; flex-direction: row;" :class="{mainHeader: authStore.isAuthenticated}">
-      <img
-        alt="YomuBo logo"
-        :class="{logo: !authStore.isAuthenticated}"
-        src="@/assets/logo.svg"
-        :width="width"
-        :height="height"
-      />
+  <div>
+    <header >
+      <div style="display: flex; flex-direction: row; " :class="{mainHeader: authStore.isAuthenticated}">
+        <img
+          alt="YomuBo logo"
+          :class="{logo: !authStore.isAuthenticated}"
+          src="@/assets/logo.svg"
+          :width="width"
+          :height="height"
+        />
 
-      <nav :class="{mainNav: authStore.isAuthenticated, landingNav: !authStore.isAuthenticated}">
-        <RouterLink to="/">{{ $t("landingPage.nav.home") }}</RouterLink>
-        <RouterLink to="/clubs" v-if="authStore.isAuthenticated">Clubs</RouterLink>
-        <RouterLink to="/books" v-if="authStore.isAuthenticated">Books</RouterLink>
-        <RouterLink to="/about">{{ $t("landingPage.nav.about") }}</RouterLink>
-      </nav>
+        <nav :class="{mainNav: authStore.isAuthenticated, landingNav: !authStore.isAuthenticated}">
+          <RouterLink to="/">{{ $t("landingPage.nav.home") }}</RouterLink>
+          <RouterLink to="/#how-it-works" v-if="!authStore.isAuthenticated" style="color: var(--color-text);">How it works</RouterLink>
+          <RouterLink to="/clubs" v-if="authStore.isAuthenticated">Clubs</RouterLink>
+          <RouterLink to="/books" v-if="authStore.isAuthenticated">Books</RouterLink>
+          <RouterLink to="/about">{{ $t("landingPage.nav.about") }}</RouterLink>
+        </nav>
 
-      <UserMenu v-if="authStore.isAuthenticated"/>
-    </div>
-    
-    
-  </header>
-  <div :class="{ invisiblePad: authStore.isAuthenticated}">
-
+        <UserMenu v-if="authStore.isAuthenticated"/>
+      </div>
+    </header>
   </div>
 </template>
 

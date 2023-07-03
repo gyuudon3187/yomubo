@@ -3,13 +3,15 @@ import Modal from "../../components/Misc/Modal.vue";
 import { useI18n } from "vue-i18n";
 import { useAuthStore } from "@/stores/auth";
 import { useModalStore } from "@/stores/modal";
+import { storeToRefs } from "pinia";
 import untypedLanguages from '@/i18n/languages.json';
 import {
   initializeButtons,
   initializeInputField,
   initializeRadioButton,
   initializeMultiselectDropdown,
-  initializeInputComponentGroup } from "@/components/util";
+  initializeInputComponentGroup,
+  getLabelPath } from "@/components/util";
 import { 
   confirmPassword,
   getValidationPath,
@@ -27,7 +29,8 @@ import type { ButtonInterface, InputComponentGroup, ValidationGroup } from "@/ty
 import { ref, type Ref } from "vue";
 const { t } = useI18n();
 const { createUser } = useAuthStore();
-const { close } = useModalStore();
+const modal = useModalStore();
+const { registrationModalIsVisible } = storeToRefs(modal);
 
 const {
   header,
@@ -67,7 +70,7 @@ function initializeVariables(): { header: string,
     header: t(basePath + "header"),
     componentGroups,
     buttons: initializeButtons(buttonsPath, [
-      {text: "return", type: "quaternary", callback: close},
+      {text: "return", type: "quaternary", callback: () => modal.close(registrationModalIsVisible)},
       {text: "submit", type: "primary", callback: submit}
     ]),
     requiredFields: [InputId.FirstName, InputId.Email, InputId.Password, InputId.ConfirmPassword],
@@ -259,10 +262,6 @@ function initializeVariables(): { header: string,
 
       return { passwordGroup, confirmPasswordValidation }
     }
-  }
-
-  function getLabelPath(path: string): string {
-    return path + "label";
   }
 }
 </script>

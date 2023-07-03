@@ -2,16 +2,28 @@
 import Header from '@/components/LandingPage/Header.vue';
 import ClubContent from '@/components/Main/Clubs/ClubContent/ClubContent.vue'
 import ClubManagement from '@/components/Main/Clubs/ClubManagement/ClubManagement.vue';
-
+import ReasonModal from '@/components/Main/Clubs/ClubContent/ReadingList/ReasonModal.vue';
+import DeleteModal from '@/components/Main/Clubs/ClubContent/ReadingList/DeleteModal.vue';
+import VoteResultsModal from '@/components/Main/Clubs/ClubContent/VoteResultsModal.vue';
+import { storeToRefs } from 'pinia';
+import { useModalStore } from '@/stores/modal';
+const { 
+    reasonModalIsVisible, 
+    deleteBookModalIsVisible, 
+    voteResultsModalIsVisible } = storeToRefs(useModalStore());
 </script>
 
 <template>
     <div id="mainPage">
-        <Header :height="60" :width="174" />
+        <ReasonModal v-show="reasonModalIsVisible" />
+        <DeleteModal v-show="deleteBookModalIsVisible" />
+        <VoteResultsModal v-if="voteResultsModalIsVisible" />
+        <Header style="position: fixed; width: 100%; z-index: 1;" :height="60" :width="174" />
+        <div class="pad1"></div>
         <div class="test">
             <ClubManagement />
             <ClubContent />
-            <div class="pad"></div>
+        <div class="pad2"></div>
         </div>
     </div>
 </template>
@@ -30,33 +42,23 @@ import ClubManagement from '@/components/Main/Clubs/ClubManagement/ClubManagemen
 } */
 
 .test {
-    padding: 2.5rem 3rem;
+    padding: 1rem 3rem;
     height: 100vh;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    /* overflow-y: scroll; */
 }
 
+.pad1 {
+    width: 100%;
+    height: 4.7vw;
+    /* background-color: red; */
+}
 
-.pad {
+.pad2 {
     width: 180px;
     height: 20px;
-}
-
-.line {
-    height: 1.5px;
-    width: 100%;
-    position: absolute;
-    bottom: 5px;
-    background-color: var(--color-border);
-}
-
-.line-2 {
-    height: 1.5px;
-    width: 55%;
-    position: absolute;
-    bottom: 0px;
-    background-color: var(--color-border);
 }
 
 </style>

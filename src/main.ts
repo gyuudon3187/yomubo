@@ -27,7 +27,11 @@ import {
     faMasksTheater,
     faCircleXmark,
     faPen,
-    faEye
+    faEye,
+    faCaretSquareLeft,
+    faCaretSquareUp,
+    faCaretSquareRight,
+    faCaretSquareDown
      } from '@fortawesome/free-solid-svg-icons'
 
 import "./assets/main.css";
@@ -50,22 +54,33 @@ const icons = [
     faMasksTheater,
     faCircleXmark,
     faPen,
-    faEye
+    faEye,
+    faCaretSquareLeft,
+    faCaretSquareUp,
+    faCaretSquareRight,
+    faCaretSquareDown
 ]
 
 icons.forEach(icon => library.add(icon));
 
-const app = createApp(Root);
+// const app = createApp(Root);
 
-app.use(createPinia());
-app.use(router);
-app.use(i18n);
-app.use(VueFire, {
+// app.use(createPinia());
+// app.use(router);
+// app.use(i18n);
+// app.use(VueFire, {
+//     firebaseApp,
+//     modules: [
+//         VueFireAuth()
+//     ]
+// })
+// app.component('Icon', FontAwesomeIcon)
+
+// app.mount("#app");
+
+createApp(Root).use(createPinia()).use(router).use(i18n).use(VueFire, {
     firebaseApp,
     modules: [
         VueFireAuth()
     ]
-})
-app.component('Icon', FontAwesomeIcon)
-
-app.mount("#app");
+}).component('Icon', FontAwesomeIcon).mount('#app');

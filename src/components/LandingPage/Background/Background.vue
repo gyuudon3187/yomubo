@@ -4,7 +4,7 @@ import Explanation from "./Explanation.vue"
 </script>
 
 <template>
-    <div>
+    <div style="position: relative;">
       <BackgroundImages />
       <Explanation />
     </div>

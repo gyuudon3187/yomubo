@@ -4,17 +4,28 @@ import type {
     InputFieldInterface,
     MultiselectDropdownInterface,
     RadioButtonInterface,
-    Club, 
+    DatePickerInterface,
+    Club,
+    BookCandidate,
     Option,
     Validation,
     InputComponent,
     InputComponentGroup,
     ValidationGroup,
-    AccordionItem} from "@/types/misc";
+    AccordionItem,
+    LocationPickerInterface,
+    TextAreaInterface} from "@/types/misc";
 import i18n from "@/i18n";
 import { ref, type Ref } from "vue";
 import { camelize } from "@/util/misc";
 const { t } = i18n.global
+
+export enum Stage {
+  Start = "start",
+  Voting = "voting",
+  Reading = "reading",
+  Discussing = "discussing"
+}
 
 export function initializeButtons(path: string, buttons: Omit<ButtonInterface, 'id'>[]): ButtonInterface[] {
   return buttons.map(button => {
@@ -104,15 +115,34 @@ export function initializeMultiselectDropdown(id: string,
   }
 }
 
+export function initializeDatePicker(id: string, path: string, data: Ref<Date>): DatePickerInterface {
+  return {
+    __typename: "DatePickerInterface",
+    id,
+    label: t(path + "label"),
+    data
+  }
+}
+
+export function initializeLocationPicker(id: string, path: string, data: Ref<string>): LocationPickerInterface {
+  return {
+    __typename: "LocationPickerInterface",
+    id,
+    label: t(path + "label"),
+    data
+  }
+}
+
 export function initializeClubAccordionItems(clubs: Club[]): AccordionItem[] {
   return clubs.map(club => ({
     label: club.label,
-    selected: ref(false),
+    data: club,
+    selected: false,
     subItems: [
       {
         label: "Members", 
         icon: "fa-solid fa-user-group", 
-        value: club.members.current + "/" + club.members.max
+        value: club.members.length + "/" + club.maxMemberCount
       },
       {
         label: "Language",
@@ -162,8 +192,45 @@ export function isMultiselectDropdown(component: InputComponent): component is M
   return component.__typename === "MultiselectDropdownInterface";
 }
 
+export function isDatePicker(component: InputComponent): component is DatePickerInterface {
+  return component.__typename === "DatePickerInterface";
+}
+
+export function isLocationPicker(component: InputComponent): component is LocationPickerInterface {
+  return component.__typename === "LocationPickerInterface";
+}
+
+export function isTextArea(component: InputComponent): component is TextAreaInterface {
+  return component.__typename === "TextAreaInterface";
+}
+
 export function assertIsNode(target: EventTarget | null): asserts target is Node {
   if(!target || !("nodeType" in target)) {
     throw new Error("Node expected");
   }
+}
+
+export function changeSelectionOnScroll<T extends { selected: boolean }>(e: WheelEvent, selectedIndex: Ref<number>, items: Ref<T[]>) {
+  let updatedIndex = selectedIndex.value;
+
+  const determineIndexToBeUpdatedBasedOnScrollDirection = (index: number) => index + (e.deltaY < 0 ? -1 : 1);
+  const indexToBeUpdated = determineIndexToBeUpdatedBasedOnScrollDirection(selectedIndex.value);
+
+  if(indexToBeUpdated >= 0 && indexToBeUpdated < items.value.length) {
+      items.value = items.value.map((item, index) => {
+          if(index === indexToBeUpdated) updatedIndex = index;
+          return Object.assign(item, { 
+              selected: index === indexToBeUpdated ? true :
+                        index === selectedIndex.value ? false :
+                        item.selected
+          })
+      })
+  }
+
+  selectedIndex.value = updatedIndex;
+  e.preventDefault()
+}
+
+export function getLabelPath(path: string): string {
+  return path + "label";
 }

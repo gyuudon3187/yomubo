@@ -3,20 +3,23 @@ import type { Book, BookCandidate } from "@/types/misc";
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from "@/stores/auth"; 
 import { useBooksStore } from '@/stores/books';
-import { useReadingListStore } from '@/stores/readingList';
+import { useClubStore } from "@/stores/club";
 import { useInfiniteScroll } from '@vueuse/core'
 import { ref } from 'vue';
 const booksStore = useBooksStore();
-const { readingList } = storeToRefs(useReadingListStore());
+const { selectedClub } = storeToRefs(useClubStore());
 const { uid } = useAuthStore();
 
 function addToReadingList(book: Book): void {
     const processedBook: BookCandidate = Object.assign(book, {
         selected: false,
+        voted: false,
         addedBy: uid,
         reason: ""
     })
-    readingList.value.push(processedBook);
+    const updatedSelectedClub = selectedClub.value;
+    if(updatedSelectedClub.readingList.every(otherBook => otherBook.id !== book.id)) updatedSelectedClub.readingList.push(processedBook);
+    selectedClub.value = updatedSelectedClub;
 }
 
 const infScroll = ref<HTMLElement | null>(null);
