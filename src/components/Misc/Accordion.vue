@@ -25,27 +25,6 @@ function openAccordionItem(item: AccordionItem) {
     })
 }
 
-// function changeClubOnScroll(e: WheelEvent) {
-//     let updatedIndex = selectedIndex.value;
-
-//     const determineIndexToBeUpdatedBasedOnScrollDirection = (index: number) => index + (e.deltaY < 0 ? -1 : 1);
-//     const indexToBeUpdated = determineIndexToBeUpdatedBasedOnScrollDirection(selectedIndex.value);
-
-//     if(indexToBeUpdated >= 0 && indexToBeUpdated < items.value.length) {
-//         items.value = items.value.map((item, index) => {
-//             if(index === indexToBeUpdated) updatedIndex = index;
-//             return Object.assign(item, { 
-//                 selected: index === indexToBeUpdated ? true :
-//                           index === selectedIndex.value ? false :
-//                           item.selected
-//             })
-//         })
-//     }
-
-//     selectedIndex.value = updatedIndex;
-//     e.preventDefault()
-// }
-
 function changeClubSelectionOnScroll(e: WheelEvent) {
     changeSelectionOnScroll<AccordionItem>(e, selectedIndex, items);
 }
@@ -79,6 +58,7 @@ function changeClubSelectionOnScroll(e: WheelEvent) {
     border-radius: 1vw;
     color: var(--color-on-background);
     padding: 1vw;
+    width: 14vw;
 }
 
 .item {

@@ -3,7 +3,7 @@ import Modal from '@/components/Misc/NewModal.vue';
 import TextArea from '@/components/Misc/TextArea.vue';
 import Button from '@/components/Misc/Button.vue';
 import type { TextAreaInterface } from '@/types/misc';
-import { initializeButton } from '@/components/util'
+import { initializeButton, initializeTextArea, } from '@/components/util'
 import { ref, computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useModalStore } from '@/stores/modal';
@@ -12,7 +12,7 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 const modalStore = useModalStore();
 const { reasonModalIsVisible } = storeToRefs(modalStore);
-const { selectedClub, bookToBeEdited } = storeToRefs(useClubStore());
+const { clubs, selectedClub, selectedClubIndex, bookToBeEdited } = storeToRefs(useClubStore());
 
 const basePath = "mainPage.modals.reason."
 const MODAL_HEADER = t(basePath + "header");
@@ -37,7 +37,7 @@ function initializeProps() {
     return {
         backButtonProps,
         submitButtonProps,
-        textAreaProps: initializeTextAreaProps()
+        textAreaProps: initializeTextArea("reasonTextArea", textAreaInput, 5, 50, 255)
     }
 
     function initializeButtonProps() {
@@ -58,13 +58,10 @@ function initializeProps() {
         }
 
         function submit() {
-            const currentClub = selectedClub.value;
-
-            selectedClub.value = Object.assign(currentClub, { 
-                readingList: currentClub.readingList.map(book => {
-                return book.id === bookToBeEdited.value?.id ? Object.assign(book, {
-                    reason: textAreaInput.value
-                }) : book})
+            clubs.value = clubs.value.map((club, index) => index !== selectedClubIndex.value ? club : {
+                ...club,
+                readingList: club.readingList.map(book => book.id === bookToBeEdited.value?.id ?
+                    { ...book, reason: textAreaInput.value} : book)
             })
 
             textAreaInput.value = "";
@@ -72,18 +69,7 @@ function initializeProps() {
         }
     }
 
-    function initializeTextAreaProps(): TextAreaInterface {
-        const id = "reasonTextArea";
-
-        return {
-            __typename: "TextAreaInterface",
-            input: textAreaInput,
-            id,
-            rows: 5,
-            columns: 50,
-            maxChars: 255
-        }
-    }
+    
 }
 </script>
 

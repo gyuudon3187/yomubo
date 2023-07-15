@@ -7,7 +7,7 @@ import { useClubStore } from "@/stores/club";
 import { useInfiniteScroll } from '@vueuse/core'
 import { ref } from 'vue';
 const booksStore = useBooksStore();
-const { selectedClub } = storeToRefs(useClubStore());
+const { clubs, selectedClubIndex, selectedClub } = storeToRefs(useClubStore());
 const { uid } = useAuthStore();
 
 function addToReadingList(book: Book): void {
@@ -17,9 +17,12 @@ function addToReadingList(book: Book): void {
         addedBy: uid,
         reason: ""
     })
-    const updatedSelectedClub = selectedClub.value;
-    if(updatedSelectedClub.readingList.every(otherBook => otherBook.id !== book.id)) updatedSelectedClub.readingList.push(processedBook);
-    selectedClub.value = updatedSelectedClub;
+
+    clubs.value = clubs.value.map((club, index) => index !== selectedClubIndex.value ? club : {
+        ...club,
+        readingList: club.readingList.every(otherBook => otherBook.id !== book.id) ?
+                     [ ...club.readingList, processedBook] : club.readingList
+    })
 }
 
 const infScroll = ref<HTMLElement | null>(null);

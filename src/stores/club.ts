@@ -42,7 +42,7 @@ export const useClubStore = defineStore('clubStore', () => {
                 id: "a",
                 title: "Kyokousendan",
                 pages: 592,
-                image: "src/assets/kagami_no_kojou.png",
+                image: "../src/assets/kyokousendan.jpg",
                 synopsis: "test 1",
                 authors: "test author 1",
                 reason: "",
@@ -58,16 +58,22 @@ export const useClubStore = defineStore('clubStore', () => {
                 votingDeadline: new Date(new Date().getTime() + 1000 * 60 * 60).toJSON(),
                 location: "Café Blåbär",
                 currentlyReading: "",
+                bookReport: null,
+                quotes: [],
                 votes: {},
                 stage: Stage.Voting
             }
         ],
         maxMemberCount: 8,
         language: "Japanese",
-        meeting: "Physical",
+        meetingType: "Physical",
         pace: 230,
         gender: "All",
-        genre: "Mystery"
+        genre: "Mystery",
+        settings: {
+            banner: "",
+            introduction: ""
+        }
     },
     {
         label: "Test2",
@@ -84,7 +90,7 @@ export const useClubStore = defineStore('clubStore', () => {
                 id: "b",
                 title: "Kagami no Kojou",
                 pages: 415,
-                image: "src/assets/kagami_no_kojou.png",
+                image: "../assets/kagami_no_kojou.png",
                 synopsis: "test 2",
                 authors: "test author 2",
                 reason: "",
@@ -100,19 +106,26 @@ export const useClubStore = defineStore('clubStore', () => {
                 votingDeadline: new Date(new Date().getTime() + 1000 * 60 * 60).toJSON(),
                 location: "",
                 currentlyReading: "",
+                bookReport: null,
+                quotes: [],
                 votes: {},
-                stage: Stage.Voting
+                stage: Stage.Start
             }
         ],
         maxMemberCount: 8,
         language: "Japanese",
-        meeting: "Physical",
+        meetingType: "Physical",
         pace: 230,
         gender: "All",
-        genre: "Mystery"
+        genre: "Mystery",
+        settings: {
+            banner: "",
+            introduction: ""
+        }
     }]);
     
-    const selectedClub: Ref<Club> = ref(clubs.value[0]);
+    const selectedClubIndex = ref(0);
+    const selectedClub = computed(() => clubs.value[selectedClubIndex.value]);
     const isClubOwner = computed(() => selectedClub.value.clubOwner === uid)
     const currentMeeting = computed(() => selectedClub.value.meetings.slice(-1)[0]);
     const currentMeetingIndex = computed(() => selectedClub.value.meetings.lastIndexOf(currentMeeting.value))
@@ -126,24 +139,26 @@ export const useClubStore = defineStore('clubStore', () => {
     }
     
     function removeFromReadingList(book: BookCandidate): void {
-        selectedClub.value = Object.assign(selectedClub.value, {
-            readingList: selectedClub.value.readingList.filter(otherBook => otherBook.id !== book.id)
+        clubs.value = clubs.value.map((club, index) => index !== selectedClubIndex.value ? club : {
+            ...club,
+            readingList: club.readingList.filter(otherBook => otherBook.id !== book.id)
         })
     }
 
     function updateCurrentMeeting(key: string, value: any) {
-        selectedClub.value = { 
-            ...selectedClub.value, 
+        clubs.value = clubs.value.map((club, index) => index === selectedClubIndex.value ? { 
+            ...club, 
             meetings: [ 
-                ...selectedClub.value.meetings.slice(0, selectedClub.value.meetings.length - 2),
+                ...club.meetings.slice(0, -1),
                 { ...currentMeeting.value, [key]: value }
             ] 
-        }
+        } : club)
     }
 
     return { 
         clubs, 
-        selectedClub, 
+        selectedClub,
+        selectedClubIndex, 
         isClubOwner, 
         currentMeeting, 
         currentMeetingIndex, 

@@ -14,7 +14,8 @@ import type {
     ValidationGroup,
     AccordionItem,
     LocationPickerInterface,
-    TextAreaInterface} from "@/types/misc";
+    TextAreaInterface,
+    DropdownInterface} from "@/types/misc";
 import i18n from "@/i18n";
 import { ref, type Ref } from "vue";
 import { camelize } from "@/util/misc";
@@ -88,6 +89,30 @@ export function initializeRadioButton(id: string,
   }
 }
 
+export function initializeDropdown(id: string,
+                                   path: string,
+                                   optionNames: string[],
+                                   initialInput: Ref<string> | Ref<string[]>,
+                                   validation?: Validation[],
+                                   multiselect?: boolean): DropdownInterface {
+  const options: Option[] = optionNames.map(optionName => ({
+    label: optionName, 
+    selected: ref(false),
+    isVisible: ref(true),
+    validation
+  }));
+
+  return {
+    __typename: "DropdownInterface",
+    id,
+    label: t(path + "label"),
+    options,
+    input: initialInput,
+    placeholderPath: path,
+    multiselect
+  }
+}
+
 export function initializeMultiselectDropdown(id: string, 
                                               path: string, 
                                               optionNames: string[],
@@ -152,7 +177,7 @@ export function initializeClubAccordionItems(clubs: Club[]): AccordionItem[] {
       {
         label: "Meetings",
         icon: "fa-solid fa-users",
-        value: club.meeting
+        value: club.meetingType
       },
       {
         label: "Pace",
@@ -171,6 +196,17 @@ export function initializeClubAccordionItems(clubs: Club[]): AccordionItem[] {
       }
     ]
   }))
+}
+
+export function initializeTextArea(id: string, input: Ref<string>, rows: number, columns: number, maxChars?: number): TextAreaInterface {
+  return {
+      __typename: "TextAreaInterface",
+      input,
+      id,
+      rows,
+      columns,
+      maxChars
+  }
 }
 
 export function initializeInputComponentGroup(path: string, components: InputComponent[]): InputComponentGroup {

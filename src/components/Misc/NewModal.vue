@@ -22,7 +22,7 @@ const {
     voteResultsModalIsVisible  } = storeToRefs(useModalStore());
 
 const props = withDefaults(defineProps<{
-    name: "registration" | "reason" | "delete" | "voteResults",
+    name: "registration" | "reason" | "delete" | "voteResults" | "quote",
     backgroundColor?: string,
     color?: string,
     noFooter?: boolean,

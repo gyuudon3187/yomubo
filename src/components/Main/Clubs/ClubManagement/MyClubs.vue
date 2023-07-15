@@ -3,21 +3,19 @@ import Accordion from '@/components/Misc/Accordion.vue';
 import type { AccordionItem, Club } from '@/types/misc';
 import { useClubStore } from '@/stores/club';
 import { initializeClubAccordionItems } from '@/components/util'
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
-const { clubs, selectedClub } = storeToRefs(useClubStore());
+const { clubs, selectedClub, selectedClubIndex } = storeToRefs(useClubStore());
 
 const accordionProps = initializeClubAccordionItems(clubs.value)
 
 function selectClub(items: AccordionItem[]) {
-    const newSelectedClub = items.find(item => item.selected)?.data as Club;
-    const readingList = newSelectedClub.readingList;
-
-    selectedClub.value = Object.assign(newSelectedClub, {
-        readingList: readingList.map((book, index) => Object.assign(book, {
-            selected: index === 0
-        }))
-    });
+    const newSelectedItem = items.find(item => item.selected);
+    selectedClubIndex.value = items.indexOf(newSelectedItem as AccordionItem);
+    clubs.value = clubs.value.map((club, index) => index !== selectedClubIndex.value ? club : {
+        ...club,
+        readingList: club.readingList.map((book, index) => ({ ...book, selected: index === 0 }))
+    })
 }
 </script>
 

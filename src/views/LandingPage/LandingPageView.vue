@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { onMounted } from "vue";
+import { RouterView, useRouter } from "vue-router";
 import RegistrationModal from "@/components/LandingPage/RegistrationModal.vue";
 import Background from "../../components/LandingPage/Background/Background.vue";
 import Header from "../../components/LandingPage/Header.vue";
 import { useModalStore } from "@/stores/modal";
 const modal = useModalStore();
+const router = useRouter();
 
+router.push({
+  name: 'landing'
+})
 </script>
 
 <template>
@@ -27,6 +32,13 @@ const modal = useModalStore();
 </template>
 
 <style scoped>
+.test {
+  background-color: var(--color-header);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 #landingPage {
   padding: 2rem 3rem;
   width: 1280px;

@@ -2,6 +2,14 @@
     "validation": {
         "required": "This field is required."
     },
+    "alert": {
+        "success": "Successfully {msg}",
+        "fail": "Failed to",
+        "operations": {
+            "savedChanges": "saved changes."
+        },
+        "deadlineNoVotes": "No votes casted. Extending deadline by 1 day."
+    },
     "landingPage": {
         "nav": {
             "home": "Home",
@@ -109,21 +117,94 @@
                 "startReading": "Start Reading"
             }
         },
-        "clubContent": {
-            "votesOrProgress": {
-                "timeUnits": {
-                    "days": "days",
-                    "hours": "hours",
-                    "minutes": "minutes",
-                    "seconds": "seconds"
+        "sidebars": {
+            "myClubs": {
+
+            },
+            "findClubs": {
+                "type": {
+                    "label": "Type",
+                    "online": "Online",
+                    "physical": "Physical"
                 },
-                "untilVotesAreCounted": "until votes are counted"
+                "language": {
+                    "label": "Language",
+                    "placeholder": "Select Language"
+                },
+                "genres": {
+                    "label": "Genres",
+                    "placeholder": "Select genre"
+                }
+            }
+        },
+        "clubContent": {
+            "startStage": {
+                "waiting": "Waiting for club owner to prepare meeting...",
+                "setup": "Set up a new meeting",
+                "clubOwner": {
+                    "title": "",
+                    "nextStageButton": "Next"
+                }
+            },
+            "book": {
+                "currentlyReading": "Currently Reading"
+            },
+            "votesOrReading": {
+                "votes": {
+                    "header": "Votes",
+                    "subheaders": {
+                        "member": "Member",
+                        "hasVoted": "Has Voted"
+                    }
+                },
+                "reading": {
+                    "header": "Who Is Reading",
+                    "subheaders": {
+                        "participants": "Participants",
+                        "progress": "Progress"
+                    }
+                },
+                "countdown": {
+                    "timeUnits": {
+                        "days": "days",
+                        "hours": "hours",
+                        "minutes": "minutes",
+                        "seconds": "seconds"
+                    },
+                    "untilVotesAreCounted": "until votes are counted"
+                }
             },
             "readingList": {
                 "options": {
                     "vote": "Vote",
                     "unvote": "Unvote"
                 }
+            },
+            "noteTaker": {
+                "header": "Note Taker",
+                "tabs": {
+                    "bookReport": "Book Report",
+                    "quotes": "Quotes"
+                },
+                "quotes": {
+                    "headers": {
+                        "quote": "Quote",
+                        "note": "Note",
+                        "page": "Page"
+                    },
+                    "placeholders": {
+                        "quote": "Ex. 'Lorem ipsum'",
+                        "note": "Ex. 'Interesting'",
+                        "page": "Ex. 128"
+                    },
+                    "validation": {
+                        "maxLength": "Must be below {number} characters.",
+                        "invalid": "Negative numbers & zero not allowed.",
+                        "notNumber": "Not a number."
+                    },
+                    "addNewQuote": "Add new quote..."
+                },
+                "placeholder": "Write down your thoughts about the book..."
             },
             "nextMeeting": {
                 "type": {
@@ -132,7 +213,7 @@
                     "physical": "Physical"
                 },
                 "meetingDate": {
-                    "label": "Time & Date"
+                    "label": "Meeting Date"
                 },
                 "votingDeadline": {
                     "label": "Voting Deadline"
@@ -140,6 +221,9 @@
                 "location": {
                     "label": "Location",
                     "meetingLocation": "Set meeting location"
+                },
+                "link": {
+                    "label": "Link"
                 }
             }
         }

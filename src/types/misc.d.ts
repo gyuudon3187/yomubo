@@ -1,4 +1,5 @@
 import type { ComputedRef, Ref } from "vue";
+import type { Delta } from "@vueup/vue-quill";
 import { Stage } from "@/components/util";
 
 export interface InputComponentGroup {
@@ -24,6 +25,14 @@ export interface RadioButtonInterface extends HasId, HasLabel, HasValidation {
     buttons: string[],
     input: Ref<string>,
     checkedIndex?: number
+}
+
+export interface DropdownInterface extends HasId, HasLabel, HasValidation {
+    __typename: "DropdownInterface",
+    options: Option[],
+    input: Ref<string> | Ref<string[]>,
+    placeholderPath: string
+    multiselect?: boolean
 }
 
 export interface MultiselectDropdownInterface extends HasId, HasLabel, HasValidation {
@@ -71,10 +80,16 @@ export interface Club extends HasLabel {
     meetings: Meeting[],
     maxMemberCount: number,
     language: Language,
-    meeting: MeetingType,
+    meetingType: MeetingType,
     pace: number,
     gender: Gender,
-    genre: string
+    genre: string,
+    settings: ClubSettings
+}
+
+interface ClubSettings {
+    banner: string,
+    introduction: string
 }
 
 export interface Meeting {
@@ -83,8 +98,17 @@ export interface Meeting {
     votingDeadline: string,
     location: string,
     currentlyReading: string,
+    bookReport: Delta | null,
+    quotes: Quote[],
     votes: Votes
     stage: Stage.Start | Stage.Voting | Stage.Reading | Stage.Discussing
+}
+
+export interface Quote {
+    content: string,
+    note: string,
+    page: number
+    isFullyVisible: boolean
 }
 
 interface Votes {

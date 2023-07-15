@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { useAlertStore } from '@/stores/alert';
 import { useClubStore } from '@/stores/club';
 import { useModalStore } from '@/stores/modal';
 import { useI18n } from 'vue-i18n';
@@ -7,12 +8,37 @@ import { Stage } from '@/components/util';
 import type { Member } from '@/types/misc';
 import { computed, ref, watch } from 'vue';
 const clubStore = useClubStore();
+const { displayAlert } = useAlertStore();
 const { selectedClub, currentMeeting, currentMeetingIndex } = storeToRefs(clubStore);
 const { voteResultsModalIsVisible } = storeToRefs(useModalStore());
 const { t } = useI18n();
 
-const basePath = "mainPage.clubContent.votesOrProgress."
-const timeUnitPath = basePath + "timeUnits."
+const basePath = "mainPage.clubContent.votesOrReading."
+
+const countdownPath = basePath + "countdown."
+const timeUnitPath = countdownPath + "timeUnits."
+
+const votesPath = basePath + "votes."
+const votesSubheadersPath = votesPath + "subheaders."
+
+const readingPath = basePath + "reading."
+const readingSubheadersPath = readingPath + "subheaders."
+
+const VOTING_MODE = {
+    HEADER: t(votesPath + "header"),
+    SUBHEADERS: {
+        MEMBER: t(votesSubheadersPath + "member"),
+        HAS_VOTED: t(votesSubheadersPath + "hasVoted")
+    }
+}
+
+const READING_MODE = {
+    HEADER: t(readingPath + "header"),
+    SUBHEADERS: {
+        PARTICIPANTS: t(readingSubheadersPath + "participants"),
+        PROGRESS: t(readingSubheadersPath + "progress")
+    }
+}
 
 const TIME_UNITS = {
     SECONDS: t(timeUnitPath + "seconds"),
@@ -20,7 +46,7 @@ const TIME_UNITS = {
     HOURS: t(timeUnitPath + "hours"),
     DAYS: t(timeUnitPath + "days")
 }
-const untilVotesAreCounted = t(basePath + "untilVotesAreCounted")
+const untilVotesAreCounted = t(countdownPath + "untilVotesAreCounted")
 
 enum TimeUnit {
     Second = 1000,
@@ -39,13 +65,14 @@ const hours = computed(() => Math.floor((distance.value % TimeUnit.Day) / TimeUn
 const days = computed(() => Math.floor(distance.value / TimeUnit.Day));
 
 watch(distance, () => {
-    if(distance.value < 0) {
+    if(distance.value < 0 && clubStore.isInStage(Stage.Voting)) {
         if(Object.keys(currentMeeting.value.votes).length !== 0) {
             clearTimeout(timer);
             voteResultsModalIsVisible.value = true;
         } else {
             extendDateByOneDay("date");
             extendDateByOneDay("votingDeadline");
+            displayAlert(t("alert.deadlineNoVotes"), false);
 
             function extendDateByOneDay(dateOrDeadline: "date" | "votingDeadline") {
                 const value = new Date((dateOrDeadline === "date" ? 
@@ -64,12 +91,25 @@ function hasVoted(member: Member) {
 
 <template>
     <div>
-        <p style="font-size: 1.8vw; color: var(--color-on-background)">Votes</p>
+        <Transition name="fade-up" mode="out-in">
+            <p v-if="clubStore.isInStage(Stage.Voting)" class="header">{{ VOTING_MODE.HEADER }}</p>
+            <p v-else-if="clubStore.isInStage(Stage.Reading)" class="header">{{ READING_MODE.HEADER }}</p>
+        </Transition>
+        
         <div class="votesContent">
-            <div class="header">
-                <p>Member</p>
-                <p>Has Voted</p>
+            <div class="subheaderContainer">
+                <Transition name="fade-up" mode="out-in">
+                    <div v-if="clubStore.isInStage(Stage.Voting)" class="subheader">
+                        <p>{{ VOTING_MODE.SUBHEADERS.MEMBER }}</p>
+                        <p>{{ VOTING_MODE.SUBHEADERS.HAS_VOTED }}</p>
+                    </div>
+                    <div v-else-if="clubStore.isInStage(Stage.Reading)" class="subheader">
+                        <p>{{ READING_MODE.SUBHEADERS.PARTICIPANTS }}</p>
+                        <p>{{ READING_MODE.SUBHEADERS.PROGRESS }}</p>
+                    </div>
+                </Transition>
             </div>
+            
             <div class="panel">
                 <div class="memberList">
                     <div v-for="member in selectedClub.members" class="member">
@@ -108,23 +148,52 @@ function hasVoted(member: Member) {
 </template>
 
 <style scoped>
+.fade-up-enter-active,
+.fade-up-leave-active {
+    transition: all 0.5s ease;
+    opacity: 1;
+    transform: translateY(10px);
+}
+
+.fade-up-enter-to {
+    transform: translateY(0);
+}
+
+.fade-up-enter-from {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.fade-up-leave-to {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
 p {
     color: var(--color-on-background);
     font-size: 1vw;
 }
 
 .header {
+    font-size: 1.8vw;
+    color: var(--color-on-background);
+}
+
+.subheader {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+}
+
+.subheaderContainer {
     background-color: var(--color-on-primary);
     height: 1.8vw;
     padding: 0 1vw 0 1vw;
     border-radius: 1.8vw 1.8vw 0 0;
 }
 
-.header p {
+.subheader p {
     font-weight: bold;
 }
 

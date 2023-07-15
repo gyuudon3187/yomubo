@@ -1,10 +1,10 @@
 import { createApp } from "vue/dist/vue.esm-bundler";
-import { createPinia } from "pinia";
+import { createPinia, storeToRefs } from "pinia";
 import { VueFire, VueFireAuth } from 'vuefire';
 import { firebaseApp } from '@/config/firebaseConfig';
+import { onAuthStateChanged, getAuth } from 'firebase/auth';
 
 import Root from "./Root.vue";
-import router from "./router";
 import i18n from "./i18n";
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -31,10 +31,16 @@ import {
     faCaretSquareLeft,
     faCaretSquareUp,
     faCaretSquareRight,
-    faCaretSquareDown
+    faCaretSquareDown,
+    faPlus,
+    faTrash,
+    faSave,
+    faMagnifyingGlass,
+    faBookOpen
      } from '@fortawesome/free-solid-svg-icons'
 
 import "./assets/main.css";
+import { useAuthStore } from "./stores/auth";
 
 const icons = [
     faChevronDown,
@@ -42,6 +48,7 @@ const icons = [
     faUserCircle,
     faHouse,
     faBook,
+    faBookOpen,
     faCheckToSlot,
     faMessage,
     faGear,
@@ -58,15 +65,20 @@ const icons = [
     faCaretSquareLeft,
     faCaretSquareUp,
     faCaretSquareRight,
-    faCaretSquareDown
+    faCaretSquareDown,
+    faPlus,
+    faTrash,
+    faSave,
+    faMagnifyingGlass
 ]
 
 icons.forEach(icon => library.add(icon));
 
-// const app = createApp(Root);
+const app = createApp(Root);
 
 // app.use(createPinia());
-// app.use(router);
+// import('./router').then(res => app.use(res.default))
+// // app.use(router);
 // app.use(i18n);
 // app.use(VueFire, {
 //     firebaseApp,
@@ -78,7 +90,10 @@ icons.forEach(icon => library.add(icon));
 
 // app.mount("#app");
 
-createApp(Root).use(createPinia()).use(router).use(i18n).use(VueFire, {
+createApp(Root)
+    .use(createPinia())
+    .use((await import('./router')).default)
+    .use(i18n).use(VueFire, {
     firebaseApp,
     modules: [
         VueFireAuth()

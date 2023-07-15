@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import Book from './Book/Book.vue';
-import Votes from './Votes.vue';
-import ReadingList from './ReadingList/ReadingList.vue';
-import NextMeeting from './NextMeeting.vue'
-import { Stage } from '@/components/util';
-import { computed } from 'vue';
+import '@vuepic/vue-datepicker/dist/main.css'
 import { useClubStore } from '@/stores/club';
 import { storeToRefs } from 'pinia';
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
 const clubStore = useClubStore();
 const { selectedClub, isClubOwner } = storeToRefs(clubStore);
 
+const routeIsMyClubs = computed(() => useRoute().matched[0].name === "myClubs");
 </script>
 
 <template>
     <div>
-        <div class="header">
+        <div v-if="routeIsMyClubs" class="header">
             <p style="padding-right: 1vw;">{{ selectedClub.label }}</p>
             <nav>
-                <RouterLink to="/">
+                <RouterLink to="/myClubs">
                     <Icon icon="fa-solid fa-house" size="2xs"/>
                 </RouterLink>
-                <RouterLink to="/">
+                <RouterLink to="/myClubs/meeting">
                     <Icon icon="fa-solid fa-book" size="2xs"/>
                 </RouterLink>
                 <RouterLink to="/">
@@ -33,20 +31,23 @@ const { selectedClub, isClubOwner } = storeToRefs(clubStore);
             
             <div class="line"></div>
         </div>
-        <div v-if="clubStore.isInStage(Stage.Start)">
-
-        </div>
-        <div v-else-if="clubStore.isInStage(Stage.Voting)" class="clubContent readingStage">
-            <Book />
-            <Votes />
-            <ReadingList />
-            <NextMeeting />
-        </div>
+        <div v-else style="height: 4vw"></div>
+        <RouterView />
     </div>
     
 </template>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: all 0.2s ease;
+    opacity: 1;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
 .header {
     font-size: 2.5vw;
     color: var(--color-on-background);
@@ -60,20 +61,16 @@ nav > * {
     padding-right: 0.5vw;
 }
 
+nav > *.router-link-exact-active>* {
+    color: var(--color-primary-container);
+}
+
 .clubContent {
     background-color: var(--color-background);
     border-radius: 4.5vw;
     width: 54.5vw;
     height: 40vw;
     padding: 2vw 2vw;
-}
-
-.readingStage {
-    display: grid;
-    grid-template-columns: 35vw 13vw;
-    grid-auto-rows: 16.4vw;
-    grid-column-gap: 2vw;
-    grid-row-gap: 2.5vw;
 }
 
 .line {
@@ -83,4 +80,5 @@ nav > * {
     bottom: 5px;
     background-color: var(--color-border);
 }
+
 </style>

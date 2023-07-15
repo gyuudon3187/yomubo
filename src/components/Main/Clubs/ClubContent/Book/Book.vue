@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import type { BookCandidate } from '@/types/misc';
 import type { Ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { ref, computed, watch, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useClubStore } from '@/stores/club';
 import RangeSlider from '@/components/Misc/RangeSlider.vue';
 import { Stage } from '@/components/util';
+const { t } = useI18n();
 const clubStore = useClubStore();
 const { selectedClub, currentMeeting } = storeToRefs(clubStore);
-const selectedBook: Ref<BookCandidate | null> = ref(null);
+const selectedBook: Ref<BookCandidate | null> = ref(selectedClub.value.readingList[0] ?? null);
+
+const basePath = "mainPage.clubContent.book."
+
+const BOOK = {
+    CURRENTLY_READING: t(basePath + "currentlyReading")
+}
 
 const tabs = ["Synopsis", "Progress"];
 const selectedTabs = ref([true, false])
@@ -73,16 +81,48 @@ function selectTab(index: number) {
                 </div>
 
         </div>
-        <div v-show="clubStore.isInStage(Stage.Reading)" class="tabs">
-            <div v-for="(tab, index) in tabs" @click="() => selectTab(index)" class="tab" :class="{ unselectedTab: !selectedTabs[index], selectedTab: selectedTabs[index]}">
-                <p>{{ tab }}</p>
+        <Transition name="pop-up">
+            <div v-show="clubStore.isInStage(Stage.Reading)" class="tabs">
+                <div v-for="(tab, index) in tabs" @click="() => selectTab(index)" class="tab" :class="{ unselectedTab: !selectedTabs[index], selectedTab: selectedTabs[index]}">
+                    <p>{{ tab }}</p>
+                </div>
             </div>
+        </Transition>
+        
+        <div class="bookContainer">
+            <img class="book" :src="selectedBook?.image ?? 'src/assets/placeholder.png'"/>
+            <Transition v-show="clubStore.isInStage(Stage.Reading)" name="unfold">
+                <div class="currentlyReading">
+                    <p>{{ BOOK.CURRENTLY_READING }}</p>
+                </div>
+            </Transition>
         </div>
-        <img class="book" :src="selectedBook?.image ?? 'src/assets/placeholder.png'"/>
+        
     </div>
 </template>
 
 <style scoped>
+.unfold-enter-active,
+.unfold-leave-active {
+    transition: all 1s ease;
+    max-height: 1.3vw;
+}
+
+.unfold-enter-from,
+.unfold-leave-to {
+    max-height: 0;
+}
+
+.pop-up-enter-active,
+.pop-up-leave-active {
+    transition: all 1s ease;
+    transform: translateY(0);
+}
+
+.pop-up-enter-from,
+.pop-up-leave-to {
+    transform: translateY(2vw);
+}
 
 .slide-left-enter-active {
     transition: all 300ms ease-out;
@@ -125,13 +165,30 @@ function selectTab(index: number) {
     position: relative;
 }
 
-.book {
-    border-radius: 3px;
+.bookContainer {
     position:absolute;
-    bottom: 2vw;
     left: 2vw;
+    bottom: 2vw;
+    z-index: 1;
+}
+
+.book {
+    border-radius: 0.3vw;
     width: 10vw;
     height: auto;
+}
+
+.currentlyReading {
+    height: 1.3vw;
+    width: 10vw;
+    bottom: 0.5vw;
+    border-radius: 0 0 0.3vw 0.3vw;
+    background-color: var(--color-header);
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1vw;
 }
 
 .subcontainer {
@@ -141,6 +198,7 @@ function selectTab(index: number) {
     border-radius: 20px;
     bottom: 0;
     position: absolute;
+    z-index: 1;
 }
 
 .content {
@@ -177,7 +235,8 @@ function selectTab(index: number) {
     height: 1.65vw;
     position: absolute;
     right: 4vw;
-    top: 1.45vw
+    top: 1.45vw;
+    z-index: 0;
 }
 
 .tab {
@@ -261,17 +320,6 @@ function selectTab(index: number) {
     display: flex;
     justify-content: flex-end;
     font-size: 1.5vw;
-    font-weight: bold;
-}
-
-.radialProgress {
-    /* position: absolute;
-    top: -3vw;
-    margin-right: 0; */
-}
-
-.radialProgress p, .radialProgress span {
-    font-size: 20px;
     font-weight: bold;
 }
 </style>

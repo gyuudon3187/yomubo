@@ -23,10 +23,10 @@ defineProps<{
           :height="height"
         />
 
-        <nav :class="{mainNav: authStore.isAuthenticated, landingNav: !authStore.isAuthenticated}">
-          <RouterLink to="/">{{ $t("landingPage.nav.home") }}</RouterLink>
+        <nav v-if="!authStore.isAuthenticated" :class="{mainNav: authStore.isAuthenticated, landingNav: !authStore.isAuthenticated}">
+          <RouterLink :to="authStore.isAuthenticated ? '/' : '/landing'">{{ $t("landingPage.nav.home") }}</RouterLink>
           <RouterLink to="/#how-it-works" v-if="!authStore.isAuthenticated" style="color: var(--color-text);">How it works</RouterLink>
-          <RouterLink to="/clubs" v-if="authStore.isAuthenticated">Clubs</RouterLink>
+          <RouterLink to="/myClubs" v-if="authStore.isAuthenticated">Clubs</RouterLink>
           <RouterLink to="/books" v-if="authStore.isAuthenticated">Books</RouterLink>
           <RouterLink to="/about">{{ $t("landingPage.nav.about") }}</RouterLink>
         </nav>

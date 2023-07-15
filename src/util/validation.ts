@@ -23,7 +23,8 @@ export enum ValidationId {
     Invalid = "invalid",
     MinLength = "minLength",
     MaxLength = "maxLength",
-    NotMatching = "notMatching"
+    NotMatching = "notMatching",
+    NotNumber = "notNumber"
 }
 
 export function initializeValidationGroup(validations: Validation[]): ValidationGroup {

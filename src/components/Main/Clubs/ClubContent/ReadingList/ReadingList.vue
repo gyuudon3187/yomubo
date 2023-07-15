@@ -13,6 +13,8 @@ const { uid } = useAuthStore();
 const clubStore = useClubStore();
 const { 
     selectedClub, 
+    selectedClubIndex,
+    clubs,
     currentMeeting, 
     currentMeetingIndex,
     selectedBookIndex,
@@ -46,9 +48,17 @@ function closeBookSearchOnOutsideClick({ target }: MouseEvent) {
 }
 
 function selectBook(book: BookCandidate) {
-    const currentClub = selectedClub.value;
-    selectedClub.value = Object.assign(currentClub, {
-        readingList: currentClub.readingList.map((otherBook, index) => {
+    // const currentClub = selectedClub.value;
+    // selectedClub.value = Object.assign(currentClub, {
+    //     readingList: currentClub.readingList.map((otherBook, index) => {
+    //         if(hasSameId(otherBook)) selectedBookIndex.value = index;
+    //         return Object.assign(otherBook, { selected: hasSameId(otherBook) })
+    //     })
+    // })
+    
+    clubs.value = clubs.value.map((club, index) => index !== selectedClubIndex.value ? club : {
+        ...club,
+        readingList: club.readingList.map((otherBook, index) => {
             if(hasSameId(otherBook)) selectedBookIndex.value = index;
             return Object.assign(otherBook, { selected: hasSameId(otherBook) })
         })
@@ -85,23 +95,36 @@ function voteOrUnvote(bookId: string) {
     function vote(bookId: string) {
         const currentClub = selectedClub.value;
 
-        selectedClub.value = Object.assign(currentClub, {
+        clubs.value = clubs.value.map((club, index) => index !== selectedClubIndex.value ? club : {
+            ...club,
             meetings: currentClub.meetings.map((meeting, index) => 
                 index === currentMeetingIndex.value ? 
-                Object.assign(meeting, Object.assign(meeting.votes, { [uid]: bookId })) : meeting),
+                { ...meeting, votes: { ...meeting.votes, [uid]: bookId } } : meeting),
             readingList: currentClub.readingList.map(book => 
-                book.id === bookId ? Object.assign(book, { voted: true }) : book)
+                book.id === bookId ? { ...book, voted: true } : book)
         })
     }
 
     function unvote() {
-        const currentClub = selectedClub.value;
+        // const currentClub = selectedClub.value;
 
-        const prevBookId = selectedClub.value.meetings[currentMeetingIndex.value].votes[uid]
-        delete selectedClub.value.meetings[currentMeetingIndex.value].votes[uid];
-        selectedClub.value = Object.assign(currentClub, {
-            readingList: currentClub.readingList.map(book => 
-                book.id === prevBookId ? Object.assign(book, { voted: false }) : book)
+        // const prevBookId = selectedClub.value.meetings[currentMeetingIndex.value].votes[uid]
+        // delete selectedClub.value.meetings[currentMeetingIndex.value].votes[uid];
+        // selectedClub.value = Object.assign(currentClub, {
+        //     readingList: currentClub.readingList.map(book => 
+        //         book.id === prevBookId ? Object.assign(book, { voted: false }) : book)
+        // })
+
+        clubs.value = clubs.value.map((club, index) => {
+            return index !== selectedClubIndex.value ? club : (() => {
+                const prevBookId = club.meetings[currentMeetingIndex.value].votes[uid];
+                delete club.meetings[currentMeetingIndex.value].votes[uid];
+                return {
+                    ...club,
+                    readingList: club.readingList.map(book => 
+                        book.id === prevBookId ? { ...book, voted: false } : book)
+                }
+            })();
         })
     }
 }
@@ -132,9 +155,12 @@ function initializeModalFunctions() {
 }
 
 function changeBookSelectionOnScroll(e: WheelEvent) {
-    const readingList = ref(selectedClub.value.readingList);
+    const readingList = ref(clubs.value[selectedClubIndex.value].readingList);
     changeSelectionOnScroll(e, selectedBookIndex, readingList);
-    selectedClub.value = Object.assign(selectedClub.value, { readingList: readingList.value })
+    clubs.value = clubs.value.map((club, index) => index !== selectedClubIndex.value ? club : {
+        ...club,
+        readingList: readingList.value
+    })
 }
 
 function trunctuate(str: string) {

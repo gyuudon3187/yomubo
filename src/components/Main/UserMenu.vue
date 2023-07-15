@@ -1,22 +1,34 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/auth";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 const { logOut } = useAuthStore();
+const router = useRouter();
 
 const isVisible = ref(false);
+
+function signOut() {
+    logOut();
+    router.push({ name: 'landing' })
+}
+
+function test() {
+    console.log("test")
+    isVisible.value = false
+}
 </script>
 
 <template>
-    <div @mouseover="() => isVisible = true" @mouseout="() => isVisible = false" class="wrapper-1">
-        <div class="wrapper-2" >
+    <div class="wrapper-1">
+        <div class="wrapper-2" :class="{ welp: isVisible }" @mouseleave="() => isVisible = false">
             <nav>
-                <div class="wrapper-3">
+                <div>
                     <RouterLink v-show="isVisible" to="/">My Profile</RouterLink>
-                    <Icon icon="fa-solid fa-user-circle" size="2xl" class="userIcon"/>
+                    <Icon @mouseover="() => isVisible = true" icon="fa-solid fa-user-circle" size="2xl" class="userIcon"/>
                 </div>
-                <RouterLink v-show="isVisible" to="/clubs">Notifications</RouterLink>
-                <RouterLink v-show="isVisible" to="/clubs">Settings</RouterLink>
-                <p v-show="isVisible" @click="logOut">Log out</p>
+                <RouterLink v-show="isVisible" to="/">Notifications</RouterLink>
+                <RouterLink v-show="isVisible" to="/">Settings</RouterLink>
+                <p v-show="isVisible" @click="signOut">Log out</p>
             </nav>
             
         </div>
@@ -26,7 +38,7 @@ const isVisible = ref(false);
 
 <style scoped>
 .wrapper-1 {
-    width: 247px;
+    width: 170px;
     height: 60px;
 }
 
@@ -41,12 +53,12 @@ const isVisible = ref(false);
     display: flex;
     justify-content: flex-end;
 }
-.wrapper-2:hover {
+.welp {
     background-color: var(--vt-c-beige);
     transition: all 200ms;
 }
 
-.wrapper-2:hover .userIcon {
+.welp .userIcon {
     transform: translateX(-120px);
 }
 

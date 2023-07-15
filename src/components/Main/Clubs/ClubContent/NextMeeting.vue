@@ -8,7 +8,8 @@ import {
     isRadioButton,
     isDatePicker,
     isLocationPicker,
-    getLabelPath } from '@/components/util';
+    getLabelPath,
+    Stage } from '@/components/util';
 import type {
     DatePickerInterface,
     RadioButtonInterface,
@@ -21,7 +22,8 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import RadioButton from '@/components/Misc/RadioButton.vue';
 const { t } = useI18n();
-const { isClubOwner, selectedClub, currentMeeting } = storeToRefs(useClubStore());
+const clubStore = useClubStore();
+const { clubs, isClubOwner, selectedClub, currentMeeting, selectedClubIndex } = storeToRefs(clubStore);
 
 interface TitleAndDescription {
     title: string,
@@ -71,20 +73,14 @@ watch(
     (
         [newDate, newDeadline, newStringDate, newStringDeadline], 
         [prevDate, prevDeadline, prevStringDate, prevStringDeadline]) => {
-        const currentClub = selectedClub.value;
-        const lastIndex = currentClub.meetings.lastIndexOf(currentMeeting.value);
 
-        if(newDate !== prevDate) updateDateOrDeadline("date");
-        if(newDeadline !== prevDeadline) updateDateOrDeadline("votingDeadline");
+        if(newDate !== prevDate) updateDateOrDeadline("date", meetingDateInput.value);
+        if(newDeadline !== prevDeadline) updateDateOrDeadline("votingDeadline", votingDeadlineInput.value);
         if(newStringDate !== prevStringDate) updateStringDateOrDeadline(newStringDate, meetingDateInput)
         if(newStringDeadline !== prevStringDeadline) updateStringDateOrDeadline(newStringDeadline, votingDeadlineInput)
-        console.log("eternal loop?");
 
-        function updateDateOrDeadline(dateType: "date" | "votingDeadline"): void {
-            selectedClub.value = Object.assign(currentClub, { meetings: currentClub.meetings.map(
-                (meeting, index) => index === lastIndex ? 
-                Object.assign(meeting, { [dateType]: (dateType === "date" ? meetingDateInput : votingDeadlineInput).value.toJSON() }) : meeting )
-            })
+        function updateDateOrDeadline(key: "date" | "votingDeadline", value: Date): void {
+            clubStore.updateCurrentMeeting(key, value.toJSON());
         }
 
         function updateStringDateOrDeadline(stringDate: string, ref: Ref<Date>) {
@@ -92,13 +88,6 @@ watch(
         }
     }
 )
-
-// watch(
-//     [() => currentMeeting.value.date, () => currentMeeting.value.votingDeadline], 
-//     ([newDate, newDeadline], [prevDate, prevDeadline]) => {
-        
-//     }
-// )
 
 function initializeProps() {
 
@@ -176,12 +165,12 @@ function initializeProps() {
             </div>
             <div v-if="isClubOwner" class="nextMeetingContent">
                 <div v-for="titleAndDescription in titlesAndDescriptionsForClubOwner" class="titleAndDescription">
-                    <p style="color: var(--color-on-background)">
+                    <p v-if="titleAndDescription.title !== t(votingDeadlineLabelPath) || currentMeeting.stage !== Stage.Reading" style="color: var(--color-on-background)">
                         {{ titleAndDescription.title  }}
                     </p>
                     <div v-if="isRadioButton(titleAndDescription.description as InputComponent)" class="radioButtons">
                         <RadioButton
-                            :radio-button-props="(titleAndDescription.description as RadioButtonInterface)">
+                            style="transform: scale(0.8); position: absolute; left: -1.3vw" :radio-button-props="(titleAndDescription.description as RadioButtonInterface)">
                         </RadioButton>
                     </div>
                     <VueDatePicker v-else-if="isDatePicker(titleAndDescription.description as InputComponent) &&
@@ -195,7 +184,8 @@ function initializeProps() {
                         v-model="meetingDateInput" >
                     </VueDatePicker>
                     <VueDatePicker v-else-if="isDatePicker(titleAndDescription.description as InputComponent) &&
-                                             !isMeetingDate((<DatePickerInterface>titleAndDescription.description).label)"
+                                             !isMeetingDate((<DatePickerInterface>titleAndDescription.description).label) &&
+                                             currentMeeting.stage !== Stage.Reading"
                         hide-input-icon
                         prevent-min-max-navigation
                         input-class-name="dp-custom-input"
@@ -258,6 +248,8 @@ p {
     display: flex;
     flex-direction: row;
     font-size: smaller;
+    position: relative;
+    height: 1.5vw;
 }
 
 .location {
@@ -267,8 +259,6 @@ p {
     outline: none;
     transition: border-color .2s cubic-bezier(0.645, 0.045, 0.355, 1);
     width: 100%;
-    /* line-height: calc(var(--dp-font-size)*1.5); */
-    /* padding: var(--dp-input-padding); */
     color: var(--color-on-background);
     box-sizing: border-box;
 }
